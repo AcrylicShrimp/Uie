@@ -20,6 +20,10 @@
 
 //TODO : Remove below.
 #include "Color.h"
+#include "Render/Renderer.h"
+#include "Render/Shader.h"
+#include "Render/SubShader.h"
+#include "Render/Vertex.h"
 #include <Gl/glew.h>
 #include <Windows.h>
 
@@ -38,6 +42,8 @@ namespace Uie
 		//TODO : Remove below.
 		bool bFocused;
 		Color sColor;
+		Render::Vertex sVertex;
+		Render::Shader sShader;
 
 	public:
 		UIElement(UIPlacement *pPlacement, const std::wstring &sName);

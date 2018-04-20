@@ -10,6 +10,9 @@
     <Filter Include="Uie\Event">
       <UniqueIdentifier>{ad6d328b-766c-4dc1-9bcb-b696f08bdd74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Uie\Render">
+      <UniqueIdentifier>{c3f5195a-f16d-4ebd-85b9-0ca41d40362c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Uie\Window.cpp">
@@ -65,6 +68,18 @@
     </ClCompile>
     <ClCompile Include="Uie\Event\UITypeEvent.cpp">
       <Filter>Uie\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\Vertex.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\Renderer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\Shader.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\SubShader.cpp">
+      <Filter>Uie\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +151,18 @@
     </ClInclude>
     <ClInclude Include="Uie\Event\UITypeEvent.h">
       <Filter>Uie\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Vertex.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Renderer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Shader.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\SubShader.h">
+      <Filter>Uie\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -136,7 +136,7 @@ namespace Uie
 			return false;
 		}
 
-		PostMessage(this->hWindow, WM_UIE_CONTEXT_CREAT, 0, 0);
+		SendMessage(this->hWindow, WM_UIE_CONTEXT_CREAT, 0, 0);
 
 		return true;
 	}
@@ -186,11 +186,11 @@ namespace Uie
 			return false;
 		}
 
-		PostMessage(this->hWindow, WM_UIE_CONTEXT_CREAT, 0, 0);
+		SendMessage(this->hWindow, WM_UIE_CONTEXT_CREAT, 0, 0);
 
 		if (!(this->sWindowInfo.hRenderingContext = wglCreateContext(this->sWindowInfo.hDeviceContext)))
 		{
-			PostMessage(this->hWindow, WM_UIE_CONTEXT_DESTROY, 0, 0);
+			SendMessage(this->hWindow, WM_UIE_CONTEXT_DESTROY, 0, 0);
 
 			ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
 			this->sWindowInfo.hDeviceContext = nullptr;
@@ -199,7 +199,7 @@ namespace Uie
 			return false;
 		}
 
-		PostMessage(this->hWindow, WM_UIE_OPENGL_CONTEXT_CREAT, 0, 0);
+		SendMessage(this->hWindow, WM_UIE_OPENGL_CONTEXT_CREAT, 0, 0);
 
 		return true;
 	}
@@ -208,7 +208,7 @@ namespace Uie
 	{
 		if (this->sWindowInfo.hRenderingContext)
 		{
-			PostMessage(this->hWindow, WM_UIE_OPENGL_CONTEXT_DESTROY, 0, 0);
+			SendMessage(this->hWindow, WM_UIE_OPENGL_CONTEXT_DESTROY, 0, 0);
 			wglDeleteContext(this->sWindowInfo.hRenderingContext);
 		}
 
@@ -217,14 +217,14 @@ namespace Uie
 		ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
 		this->sWindowInfo.hDeviceContext = nullptr;
 
-		PostMessage(this->hWindow, WM_UIE_CONTEXT_DESTROY, 0, 0);
+		SendMessage(this->hWindow, WM_UIE_CONTEXT_DESTROY, 0, 0);
 	}
 
 	bool Window::linkCurrentThread() const
 	{
 		if (wglMakeCurrent(this->sWindowInfo.hDeviceContext, this->sWindowInfo.hRenderingContext))
 		{
-			PostMessage(this->hWindow, WM_UIE_LINK_CONTEXT, 0, 0);
+			SendMessage(this->hWindow, WM_UIE_LINK_CONTEXT, 0, 0);
 			return true;
 		}
 		else
@@ -235,7 +235,7 @@ namespace Uie
 	{
 		if (wglMakeCurrent(this->sWindowInfo.hDeviceContext, hRenderingContext))
 		{
-			PostMessage(this->hWindow, WM_UIE_LINK_CONTEXT, 0, 0);
+			SendMessage(this->hWindow, WM_UIE_LINK_CONTEXT, 0, 0);
 			return true;
 		}
 		else
@@ -244,7 +244,7 @@ namespace Uie
 
 	void Window::unlinkCurrentThread() const
 	{
-		PostMessage(this->hWindow, WM_UIE_UNLINK_CONTEXT, 0, 0);
+		SendMessage(this->hWindow, WM_UIE_UNLINK_CONTEXT, 0, 0);
 		wglMakeCurrent(nullptr, nullptr);
 	}
 

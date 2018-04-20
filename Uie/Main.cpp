@@ -10,6 +10,7 @@
 #include "Event/EventManager.h"
 
 #include <Windows.h>
+#include <GL/glew.h>
 
 BOOL WINAPI DllMain(HINSTANCE hDllInstance, DWORD nReason, LPVOID pReserved)
 {

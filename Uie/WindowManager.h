@@ -49,16 +49,16 @@ namespace Uie
 		auto &pCurrentPlacement{this->sWindowPlacementMap[pWindow]};
 
 		if (pCurrentPlacement)
-			PostMessage(pWindow->windowHandle(), WM_UIE_UNLINK_PLACEMENT, 0, 0);
+			SendMessage(pWindow->windowHandle(), WM_UIE_UNLINK_PLACEMENT, 0, 0);
 
 		pCurrentPlacement = pPlacement;
-		PostMessage(pWindow->windowHandle(), WM_UIE_LINK_PLACEMENT, 0, 0);
+		SendMessage(pWindow->windowHandle(), WM_UIE_LINK_PLACEMENT, 0, 0);
 	}
 
 	inline void WindowManager::unlinkPlacement(Window *pWindow)
 	{
 		if (this->sWindowPlacementMap[pWindow])
-			PostMessage(pWindow->windowHandle(), WM_UIE_UNLINK_PLACEMENT, 0, 0);
+			SendMessage(pWindow->windowHandle(), WM_UIE_UNLINK_PLACEMENT, 0, 0);
 
 		this->sWindowPlacementMap.erase(pWindow);
 	}

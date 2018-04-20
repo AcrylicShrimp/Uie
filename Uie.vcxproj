@@ -138,6 +138,10 @@
     <ClCompile Include="Uie\Main.cpp" />
     <ClCompile Include="Uie\Rect.cpp" />
     <ClCompile Include="Uie\RenderManager.cpp" />
+    <ClCompile Include="Uie\Render\Renderer.cpp" />
+    <ClCompile Include="Uie\Render\Shader.cpp" />
+    <ClCompile Include="Uie\Render\SubShader.cpp" />
+    <ClCompile Include="Uie\Render\Vertex.cpp" />
     <ClCompile Include="Uie\UIElement.cpp" />
     <ClCompile Include="Uie\UIEventHandler.cpp" />
     <ClCompile Include="Uie\UIManager.cpp" />
@@ -162,6 +166,10 @@
     <ClInclude Include="Uie\ManagerBase.hpp" />
     <ClInclude Include="Uie\Rect.h" />
     <ClInclude Include="Uie\RenderManager.h" />
+    <ClInclude Include="Uie\Render\Renderer.h" />
+    <ClInclude Include="Uie\Render\Shader.h" />
+    <ClInclude Include="Uie\Render\SubShader.h" />
+    <ClInclude Include="Uie\Render\Vertex.h" />
     <ClInclude Include="Uie\UieDLL.h" />
     <ClInclude Include="Uie\UIElement.h" />
     <ClInclude Include="Uie\UIEventHandler.h" />
