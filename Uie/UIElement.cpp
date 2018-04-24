@@ -70,20 +70,24 @@ namespace Uie
 			return true;
 		});
 
+		std::string sLinkLog;
+
 		this->sShader[Render::SubShaderType::Vertex].compile(
 			"#version 450 core\n"
 			"layout(location = 0) in vec2 vert_vertex;\n"
 			//"layout(location = 1) in vec4 vert_color;\n"
-			//"smooth out vec4 frag_color;"
+			//"smooth out vec4 frag_color;\n"
 			"void main() { gl_Position = vec4(vert_vertex.x, vert_vertex.y, 0.0, 1.0); }\n"
 		);
 		this->sShader[Render::SubShaderType::Fragment].compile(
 			"#version 450 core\n"
-			//"smooth in vec4 frag_color;"
-			"out vec4 output;"
-			"void main() { output = vec4(1.0, 0.0, 1.0, 0.75); }\n"
+			//"smooth in vec4 frag_color;\n"
+			"layout(location = 0) out vec4 frag_output;\n"
+			"void main() { frag_output = vec4(1.0, 0.0, 1.0, 0.75); }\n"
 		);
-		this->sShader.link();
+		this->sShader.link(&sLinkLog);
+
+		OutputDebugStringA(sLinkLog.c_str());
 	}
 
 	void UIElement::update()
@@ -94,17 +98,25 @@ namespace Uie
 	void UIElement::render()
 	{
 		//TODO : Remove below.
-		this->sVertex = {this->sRect.nL, -this->sRect.nT, this->sRect.nL, -this->sRect.nB, this->sRect.nR, -this->sRect.nB, this->sRect.nR, -this->sRect.nT};
+		this->sVertex = {
+			this->sRect.nL, -this->sRect.nT,
+			this->sRect.nL, -this->sRect.nB,
+			this->sRect.nR, -this->sRect.nB,
+			this->sRect.nR, -this->sRect.nT
+		};
+
 		this->sShader.use();
 
+		glNamedFramebufferDrawBuffer(0, GL_BACK);
+
 		glBindBuffer(GL_ARRAY_BUFFER, this->sVertex.identifier());
-		glDrawArrays(GL_QUADS, 0, 4);
+		glDrawArrays(GL_QUADS, 0, 8);
 
 		if (!this->bFocused)
 			return;
 
 		glLineWidth(1.f);
-		glDrawArrays(GL_LINE_LOOP, 0, 4);
+		glDrawArrays(GL_LINE_LOOP, 0, 8);
 	}
 
 	void UIElement::specifyOrder(std::int64_t nOrder)

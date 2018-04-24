@@ -69,9 +69,6 @@
     <ClCompile Include="Uie\Event\UITypeEvent.cpp">
       <Filter>Uie\Event</Filter>
     </ClCompile>
-    <ClCompile Include="Uie\Render\Vertex.cpp">
-      <Filter>Uie\Render</Filter>
-    </ClCompile>
     <ClCompile Include="Uie\Render\Renderer.cpp">
       <Filter>Uie\Render</Filter>
     </ClCompile>
@@ -79,6 +76,9 @@
       <Filter>Uie\Render</Filter>
     </ClCompile>
     <ClCompile Include="Uie\Render\SubShader.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\ShaderInput.cpp">
       <Filter>Uie\Render</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,9 +152,6 @@
     <ClInclude Include="Uie\Event\UITypeEvent.h">
       <Filter>Uie\Event</Filter>
     </ClInclude>
-    <ClInclude Include="Uie\Render\Vertex.h">
-      <Filter>Uie\Render</Filter>
-    </ClInclude>
     <ClInclude Include="Uie\Render\Renderer.h">
       <Filter>Uie\Render</Filter>
     </ClInclude>
@@ -162,6 +159,18 @@
       <Filter>Uie\Render</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Render\SubShader.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\IShaderInput.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Buffer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Buffer.hpp">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\ShaderInput.h">
       <Filter>Uie\Render</Filter>
     </ClInclude>
   </ItemGroup>

@@ -53,7 +53,12 @@ namespace Uie::Render
 		return this->sSubShaderList.back();
 	}
 
-	bool Shader::link(std::string *pLinkLog)
+	void Shader::use() const
+	{
+		glUseProgram(this->nIdentifier);
+	}
+
+	bool Shader::link(std::string *pLinkLog) const
 	{
 		glLinkProgram(this->nIdentifier);
 
@@ -74,8 +79,13 @@ namespace Uie::Render
 		return nResult == GL_TRUE;
 	}
 
-	void Shader::use()
+	GLint Shader::getAttribLocation(const std::string &sAttribName) const
 	{
-		glUseProgram(this->nIdentifier);
+		return glGetAttribLocation(this->nIdentifier, sAttribName.c_str());
+	}
+
+	GLint Shader::getUniformLocation(const std::string &sUniformName) const
+	{
+		return glGetUniformLocation(this->nIdentifier, sUniformName.c_str());
 	}
 }
