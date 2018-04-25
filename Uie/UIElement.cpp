@@ -75,19 +75,18 @@ namespace Uie
 		this->sShader[Render::SubShaderType::Vertex].compile(
 			"#version 450 core\n"
 			"layout(location = 0) in vec2 vert_vertex;\n"
-			//"layout(location = 1) in vec4 vert_color;\n"
-			//"smooth out vec4 frag_color;\n"
 			"void main() { gl_Position = vec4(vert_vertex.x, vert_vertex.y, 0.0, 1.0); }\n"
 		);
 		this->sShader[Render::SubShaderType::Fragment].compile(
 			"#version 450 core\n"
-			//"smooth in vec4 frag_color;\n"
 			"layout(location = 0) out vec4 frag_output;\n"
-			"void main() { frag_output = vec4(1.0, 0.0, 1.0, 0.75); }\n"
+			"void main() { frag_output = vec4(1.0, 0.0, 1.0, 0.5); }\n"
 		);
-		this->sShader.link(&sLinkLog);
+		this->sShader.link();
 
-		OutputDebugStringA(sLinkLog.c_str());
+		this->sShaderInput.attach(0, &this->sVertex, 0, sizeof(float) * 2);
+		this->sShaderInput[0]->format<float>(2, 0);
+		this->sShaderInput[0]->use(0);
 	}
 
 	void UIElement::update()
@@ -105,18 +104,16 @@ namespace Uie
 			this->sRect.nR, -this->sRect.nT
 		};
 
+		this->sShaderInput.use();
 		this->sShader.use();
 
-		glNamedFramebufferDrawBuffer(0, GL_BACK);
-
-		glBindBuffer(GL_ARRAY_BUFFER, this->sVertex.identifier());
-		glDrawArrays(GL_QUADS, 0, 8);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 		if (!this->bFocused)
 			return;
 
 		glLineWidth(1.f);
-		glDrawArrays(GL_LINE_LOOP, 0, 8);
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
 	}
 
 	void UIElement::specifyOrder(std::int64_t nOrder)

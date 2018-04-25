@@ -10,12 +10,14 @@ namespace Uie::Render
 {
 	ShaderInput::ShaderInput()
 	{
-		glGenVertexArrays(1, &this->nIdentifier);
+		glCreateVertexArrays(1, &this->nIdentifier);
 	}
 
 	ShaderInput::ShaderInput(ShaderInput &&sSrc) :
 		nIdentifier{sSrc.nIdentifier},
-		sInputList{std::move(sSrc.sInputList)}
+		sAttribMap{std::move(sSrc.sAttribMap)},
+		sBufferMap{std::move(sSrc.sBufferMap)},
+		sBufferIndexMap{std::move(sSrc.sBufferIndexMap)}
 	{
 		sSrc.nIdentifier = 0;
 	}
@@ -36,76 +38,84 @@ namespace Uie::Render
 		this->~ShaderInput();
 
 		this->nIdentifier = sSrc.nIdentifier;
-		this->sInputList = std::move(sSrc.sInputList);
+		this->sAttribMap = std::move(sSrc.sAttribMap);
+		this->sBufferMap = std::move(sSrc.sBufferMap);
+		this->sBufferIndexMap = std::move(sSrc.sBufferIndexMap);
 
 		sSrc.nIdentifier = 0;
 
 		return *this;
 	}
 
-	template<> void ShaderInput::setAttribFormat<GLbyte>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
+	ShaderAttrib *ShaderInput::operator[](GLuint nAttribIndex)
 	{
-		if (bNormalize)
-			glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_BYTE, true, nOffset);
-		else
-			glVertexArrayAttribIFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_BYTE, nOffset);
+		auto iIndex{this->sAttribMap.find(nAttribIndex)};
+
+		if (iIndex != this->sAttribMap.cend())
+			return &iIndex->second;
+
+		return &this->sAttribMap.emplace(nAttribIndex, ShaderAttrib{this->nIdentifier, nAttribIndex}).first->second;
 	}
 
-	template<> void ShaderInput::setAttribFormat<GLubyte>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
+	const ShaderAttrib *ShaderInput::operator[](GLuint nAttribIndex) const
 	{
-		if (bNormalize)
-			glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_UNSIGNED_BYTE, true, nOffset);
-		else
-			glVertexArrayAttribIFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_UNSIGNED_BYTE, nOffset);
-	}
-
-	template<> void ShaderInput::setAttribFormat<GLshort>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
-	{
-		if (bNormalize)
-			glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_SHORT, true, nOffset);
-		else
-			glVertexArrayAttribIFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_SHORT, nOffset);
-	}
-
-	template<> void ShaderInput::setAttribFormat<GLushort>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
-	{
-		if (bNormalize)
-			glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_UNSIGNED_SHORT, true, nOffset);
-		else
-			glVertexArrayAttribIFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_UNSIGNED_SHORT, nOffset);
-	}
-
-	template<> void ShaderInput::setAttribFormat<GLint>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
-	{
-		if (bNormalize)
-			glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_INT, true, nOffset);
-		else
-			glVertexArrayAttribIFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_INT, nOffset);
-	}
-
-	template<> void ShaderInput::setAttribFormat<GLuint>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
-	{
-		if (bNormalize)
-			glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_UNSIGNED_INT, true, nOffset);
-		else
-			glVertexArrayAttribIFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_UNSIGNED_INT, nOffset);
-	}
-
-	template<> void ShaderInput::setAttribFormat<GLfloat>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
-	{
-		glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_FLOAT, bNormalize, nOffset);
-	}
-
-	template<> void ShaderInput::setAttribFormat<GLdouble>(GLuint nAttribLocation, GLint nElementPerVertex, GLuint nOffset, bool bNormalize)
-	{
-		if (bNormalize)
-			glVertexArrayAttribFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_DOUBLE, true, nOffset);
-		else
-			glVertexArrayAttribLFormat(this->nIdentifier, nAttribLocation, nElementPerVertex, GL_DOUBLE, nOffset);
+		auto iIndex{this->sAttribMap.find(nAttribIndex)};
+		return iIndex == this->sAttribMap.cend() ? nullptr : &iIndex->second;
 	}
 
 	void ShaderInput::use() const
 	{
 		glBindVertexArray(this->nIdentifier);
+	}
+
+	void ShaderInput::disable(GLuint nAttribIndex)
+	{
+		this->sAttribMap.erase(nAttribIndex);
+	}
+
+	void ShaderInput::attach(GLuint nBufferIndex, const BufferBase *pBufferBase, GLintptr nOffset, GLsizei nStride, GLuint nInstancePerAdvance)
+	{
+		glVertexArrayBindingDivisor(this->nIdentifier, nBufferIndex, nInstancePerAdvance);
+		glVertexArrayVertexBuffer(this->nIdentifier, nBufferIndex, pBufferBase->identifier(), nOffset, nStride ? nStride : pBufferBase->elementSize());
+
+		this->sBufferMap[nBufferIndex] = pBufferBase;
+
+		for (auto nIndex : this->sBufferIndexMap[pBufferBase])
+			if (nIndex == nBufferIndex)
+				return;
+
+		this->sBufferIndexMap[pBufferBase].emplace_back(nBufferIndex);
+	}
+
+	void ShaderInput::detach(GLuint nBufferIndex)
+	{
+		auto iIndex{this->sBufferMap.find(nBufferIndex)};
+
+		if (iIndex == this->sBufferMap.cend())
+			return;
+
+		for (auto nIndex : this->sBufferIndexMap[iIndex->second])
+		{
+			this->sBufferMap.erase(nIndex);
+			glVertexArrayVertexBuffer(this->nIdentifier, nIndex, 0, 0, 0);
+		}
+
+		this->sBufferIndexMap.erase(iIndex->second);
+	}
+
+	void ShaderInput::detach(const BufferBase *pBufferBase)
+	{
+		auto iIndex{this->sBufferIndexMap.find(pBufferBase)};
+
+		if (iIndex == this->sBufferIndexMap.cend())
+			return;
+
+		for (auto nIndex : iIndex->second)
+		{
+			this->sBufferMap.erase(nIndex);
+			glVertexArrayVertexBuffer(this->nIdentifier, nIndex, 0, 0, 0);
+		}
+
+		this->sBufferIndexMap.erase(pBufferBase);
 	}
 }

@@ -81,6 +81,12 @@
     <ClCompile Include="Uie\Render\ShaderInput.cpp">
       <Filter>Uie\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Uie\Render\Buffer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\ShaderAttrib.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Uie\Window.h">
@@ -171,6 +177,9 @@
       <Filter>Uie\Render</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Render\ShaderInput.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\ShaderAttrib.h">
       <Filter>Uie\Render</Filter>
     </ClInclude>
   </ItemGroup>

@@ -138,8 +138,10 @@
     <ClCompile Include="Uie\Main.cpp" />
     <ClCompile Include="Uie\Rect.cpp" />
     <ClCompile Include="Uie\RenderManager.cpp" />
+    <ClCompile Include="Uie\Render\Buffer.cpp" />
     <ClCompile Include="Uie\Render\Renderer.cpp" />
     <ClCompile Include="Uie\Render\Shader.cpp" />
+    <ClCompile Include="Uie\Render\ShaderAttrib.cpp" />
     <ClCompile Include="Uie\Render\ShaderInput.cpp" />
     <ClCompile Include="Uie\Render\SubShader.cpp" />
     <ClCompile Include="Uie\UIElement.cpp" />
@@ -171,6 +173,7 @@
     <ClInclude Include="Uie\Render\IShaderInput.h" />
     <ClInclude Include="Uie\Render\Renderer.h" />
     <ClInclude Include="Uie\Render\Shader.h" />
+    <ClInclude Include="Uie\Render\ShaderAttrib.h" />
     <ClInclude Include="Uie\Render\ShaderInput.h" />
     <ClInclude Include="Uie\Render\SubShader.h" />
     <ClInclude Include="Uie\UieDLL.h" />
