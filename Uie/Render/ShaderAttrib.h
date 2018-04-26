@@ -49,9 +49,9 @@ namespace Uie::Render
 		ShaderAttrib &operator=(ShaderAttrib &&sSrc);
 
 	public:
-		template<class T> inline void format(GLint nElementPerVertex, GLuint nAdditionalOffset);
+		template<class T> inline void format(GLint nElementPerVertex, GLuint nAdditionalOffset = 0);
 		template<class T> inline void format(GLint nElementPerVertex, GLuint nAdditionalOffset, bool bNormalize);
-		template<Type T> inline void format(GLint nElementPerVertex, GLuint nAdditionalOffset);
+		template<Type T> inline void format(GLint nElementPerVertex, GLuint nAdditionalOffset = 0);
 		template<Type T> inline void format(GLint nElementPerVertex, GLuint nAdditionalOffset, bool bNormalize);
 		template<> inline void format<GLbyte>(GLint nElementPerVertex, GLuint nAdditionalOffset);
 		template<> inline void format<GLbyte>(GLint nElementPerVertex, GLuint nAdditionalOffset, bool bNormalize);

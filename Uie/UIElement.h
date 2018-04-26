@@ -44,7 +44,8 @@ namespace Uie
 		//TODO : Remove below.
 		bool bFocused;
 		Color sColor;
-		Render::Buffer<float> sVertex;
+		Render::Buffer<float> sColorBuffer;
+		Render::Buffer<float> sVertexBuffer;
 		Render::Shader sShader;
 		Render::ShaderInput sShaderInput;
 

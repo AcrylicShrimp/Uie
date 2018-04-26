@@ -16,8 +16,8 @@ namespace Uie::Render
 	ShaderInput::ShaderInput(ShaderInput &&sSrc) :
 		nIdentifier{sSrc.nIdentifier},
 		sAttribMap{std::move(sSrc.sAttribMap)},
-		sBufferMap{std::move(sSrc.sBufferMap)},
-		sBufferIndexMap{std::move(sSrc.sBufferIndexMap)}
+		sAttribBufferMap{std::move(sSrc.sAttribBufferMap)},
+		sAttribBufferIndexMap{std::move(sSrc.sAttribBufferIndexMap)}
 	{
 		sSrc.nIdentifier = 0;
 	}
@@ -39,8 +39,8 @@ namespace Uie::Render
 
 		this->nIdentifier = sSrc.nIdentifier;
 		this->sAttribMap = std::move(sSrc.sAttribMap);
-		this->sBufferMap = std::move(sSrc.sBufferMap);
-		this->sBufferIndexMap = std::move(sSrc.sBufferIndexMap);
+		this->sAttribBufferMap = std::move(sSrc.sAttribBufferMap);
+		this->sAttribBufferIndexMap = std::move(sSrc.sAttribBufferIndexMap);
 
 		sSrc.nIdentifier = 0;
 
@@ -73,49 +73,110 @@ namespace Uie::Render
 		this->sAttribMap.erase(nAttribIndex);
 	}
 
-	void ShaderInput::attach(GLuint nBufferIndex, const BufferBase *pBufferBase, GLintptr nOffset, GLsizei nStride, GLuint nInstancePerAdvance)
+	void ShaderInput::attachAttrib(const BufferBase *pBufferBase, GLuint nBufferIndex, GLint nElementPerVertex, GLintptr nOffset, GLsizei nStride, GLuint nInstancePerAdvance)
 	{
 		glVertexArrayBindingDivisor(this->nIdentifier, nBufferIndex, nInstancePerAdvance);
-		glVertexArrayVertexBuffer(this->nIdentifier, nBufferIndex, pBufferBase->identifier(), nOffset, nStride ? nStride : pBufferBase->elementSize());
+		glVertexArrayVertexBuffer(this->nIdentifier, nBufferIndex, pBufferBase->identifier(), nOffset, nStride ? nStride : (pBufferBase->elementSize() * nElementPerVertex));
 
-		this->sBufferMap[nBufferIndex] = pBufferBase;
+		this->sAttribBufferMap[nBufferIndex] = pBufferBase;
 
-		for (auto nIndex : this->sBufferIndexMap[pBufferBase])
+		for (auto nIndex : this->sAttribBufferIndexMap[pBufferBase])
 			if (nIndex == nBufferIndex)
 				return;
 
-		this->sBufferIndexMap[pBufferBase].emplace_back(nBufferIndex);
+		this->sAttribBufferIndexMap[pBufferBase].emplace_back(nBufferIndex);
 	}
 
-	void ShaderInput::detach(GLuint nBufferIndex)
+	void ShaderInput::detachAttrib(GLuint nBufferIndex)
 	{
-		auto iIndex{this->sBufferMap.find(nBufferIndex)};
+		auto iIndex{this->sAttribBufferMap.find(nBufferIndex)};
 
-		if (iIndex == this->sBufferMap.cend())
+		if (iIndex == this->sAttribBufferMap.cend())
 			return;
 
-		for (auto nIndex : this->sBufferIndexMap[iIndex->second])
+		for (auto nIndex : this->sAttribBufferIndexMap[iIndex->second])
 		{
-			this->sBufferMap.erase(nIndex);
+			this->sAttribBufferMap.erase(nIndex);
 			glVertexArrayVertexBuffer(this->nIdentifier, nIndex, 0, 0, 0);
 		}
 
-		this->sBufferIndexMap.erase(iIndex->second);
+		this->sAttribBufferIndexMap.erase(iIndex->second);
 	}
 
-	void ShaderInput::detach(const BufferBase *pBufferBase)
+	void ShaderInput::detachAttrib(const BufferBase *pBufferBase)
 	{
-		auto iIndex{this->sBufferIndexMap.find(pBufferBase)};
+		auto iIndex{this->sAttribBufferIndexMap.find(pBufferBase)};
 
-		if (iIndex == this->sBufferIndexMap.cend())
+		if (iIndex == this->sAttribBufferIndexMap.cend())
 			return;
 
 		for (auto nIndex : iIndex->second)
 		{
-			this->sBufferMap.erase(nIndex);
+			this->sAttribBufferMap.erase(nIndex);
 			glVertexArrayVertexBuffer(this->nIdentifier, nIndex, 0, 0, 0);
 		}
 
-		this->sBufferIndexMap.erase(pBufferBase);
+		this->sAttribBufferIndexMap.erase(pBufferBase);
+	}
+
+	void ShaderInput::attachUniform(const BufferBase *pBufferBase, GLuint nBufferIndex)
+	{
+		glBindBufferBase(GL_UNIFORM_BUFFER, nBufferIndex, pBufferBase->identifier());
+
+		this->sUniformBufferMap[nBufferIndex] = pBufferBase;
+
+		for (auto nIndex : this->sUniformBufferIndexMap[pBufferBase])
+			if (nIndex == nBufferIndex)
+				return;
+
+		this->sUniformBufferIndexMap[pBufferBase].emplace_back(nBufferIndex);
+	}
+
+	void ShaderInput::detachUniform(GLuint nBufferIndex)
+	{
+		auto iIndex{this->sUniformBufferMap.find(nBufferIndex)};
+
+		if (iIndex == this->sUniformBufferMap.cend())
+			return;
+
+		for (auto nIndex : this->sUniformBufferIndexMap[iIndex->second])
+		{
+			this->sUniformBufferMap.erase(nIndex);
+			glBindBufferBase(GL_UNIFORM_BUFFER, nIndex, 0);
+		}
+
+		this->sUniformBufferIndexMap.erase(iIndex->second);
+	}
+
+	void ShaderInput::detachUniform(const BufferBase *pBufferBase)
+	{
+		auto iIndex{this->sUniformBufferIndexMap.find(pBufferBase)};
+
+		if (iIndex == this->sUniformBufferIndexMap.cend())
+			return;
+
+		for (auto nIndex : iIndex->second)
+		{
+			this->sUniformBufferMap.erase(nIndex);
+			glBindBufferBase(GL_UNIFORM_BUFFER, nIndex, 0);
+		}
+
+		this->sUniformBufferIndexMap.erase(pBufferBase);
+	}
+
+	void ShaderInput::enableUniform(const std::string &sUniformName, GLuint nBufferIndex)
+	{
+		this->sUniformMap[sUniformName] = nBufferIndex;
+	}
+
+	void ShaderInput::disableUniform(const std::string &sUniformName)
+	{
+		this->sUniformMap.erase(sUniformName);
+	}
+
+	void ShaderInput::activateUniform(std::function<void(const std::string &, GLuint)> fActivator) const
+	{
+		for (const auto &sPair : this->sUniformMap)
+			fActivator(sPair.first, sPair.second);
 	}
 }

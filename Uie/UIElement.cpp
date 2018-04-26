@@ -70,23 +70,43 @@ namespace Uie
 			return true;
 		});
 
-		std::string sLinkLog;
-
 		this->sShader[Render::SubShaderType::Vertex].compile(
 			"#version 450 core\n"
+
+			"layout(std140) uniform Color {\n"
+				"vec4 color;\n"
+			"} global;\n"
+
 			"layout(location = 0) in vec2 vert_vertex;\n"
-			"void main() { gl_Position = vec4(vert_vertex.x, vert_vertex.y, 0.0, 1.0); }\n"
+
+			"void main() {\n"
+				"gl_Position = vec4(vert_vertex.x, vert_vertex.y, 0.0, 1.0);\n"
+			"}\n"
 		);
 		this->sShader[Render::SubShaderType::Fragment].compile(
 			"#version 450 core\n"
-			"layout(location = 0) out vec4 frag_output;\n"
-			"void main() { frag_output = vec4(1.0, 0.0, 1.0, 0.5); }\n"
-		);
-		this->sShader.link();
 
-		this->sShaderInput.attach(0, &this->sVertex, 0, sizeof(float) * 2);
-		this->sShaderInput[0]->format<float>(2, 0);
+			"layout(std140) uniform Color {\n"
+				"vec4 color;\n"
+			"} global;\n"
+
+			"layout(location = 0) out vec4 frag_output;\n"
+
+			"void main() {\n"
+				"frag_output = global.color;\n"
+			"}\n"
+		);
+
+		std::string sLinkLog;
+
+		this->sShader.link(&sLinkLog);
+
+		this->sShaderInput.enableUniform("Color", 0);
+		this->sShaderInput.attachUniform(&this->sColorBuffer, 0);
+
 		this->sShaderInput[0]->use(0);
+		this->sShaderInput[0]->format<float>(2);
+		this->sShaderInput.attachAttrib(&this->sVertexBuffer, 0, 2);
 	}
 
 	void UIElement::update()
@@ -97,22 +117,29 @@ namespace Uie
 	void UIElement::render()
 	{
 		//TODO : Remove below.
-		this->sVertex = {
+		this->sColorBuffer = {
+			this->sColor.nR, this->sColor.nG, this->sColor.nB, .35f
+		};
+
+		this->sVertexBuffer = {
 			this->sRect.nL, -this->sRect.nT,
 			this->sRect.nL, -this->sRect.nB,
 			this->sRect.nR, -this->sRect.nB,
 			this->sRect.nR, -this->sRect.nT
 		};
 
-		this->sShaderInput.use();
-		this->sShader.use();
+		this->sShader.use(this->sShaderInput);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 		if (!this->bFocused)
 			return;
 
-		glLineWidth(1.f);
+		this->sColorBuffer = {
+			1.f, .0f, 1.f, 1.f
+		};
+
+		glLineWidth(2.f);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);
 	}
 

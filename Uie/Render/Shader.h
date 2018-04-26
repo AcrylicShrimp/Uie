@@ -10,6 +10,7 @@
 
 #include "../UieDLL.h"
 
+#include "ShaderInput.h"
 #include "SubShader.h"
 
 #include <string>
@@ -37,7 +38,7 @@ namespace Uie::Render
 		SubShader &operator[](SubShaderType eType);
 
 	public:
-		void use() const;
+		void use(const ShaderInput &sShaderInput) const;
 		bool link(std::string *pLinkLog = nullptr) const;
 		GLint getAttribLocation(const std::string &sAttribName) const;
 		GLint getUniformLocation(const std::string &sUniformName) const;

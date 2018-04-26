@@ -13,6 +13,7 @@
 #include "Buffer.h"
 #include "ShaderAttrib.h"
 
+#include <functional>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -26,8 +27,11 @@ namespace Uie::Render
 	private:
 		GLuint nIdentifier;
 		std::unordered_map<GLuint, ShaderAttrib> sAttribMap;
-		std::unordered_map<GLuint, const BufferBase *> sBufferMap;
-		std::unordered_map<const BufferBase *, std::vector<GLuint>> sBufferIndexMap;
+		std::unordered_map<GLuint, const BufferBase *> sAttribBufferMap;
+		std::unordered_map<const BufferBase *, std::vector<GLuint>> sAttribBufferIndexMap;
+		std::unordered_map<std::string, GLuint> sUniformMap;
+		std::unordered_map<GLuint, const BufferBase *> sUniformBufferMap;
+		std::unordered_map<const BufferBase *, std::vector<GLuint>> sUniformBufferIndexMap;
 		
 	public:
 		ShaderInput();
@@ -44,9 +48,15 @@ namespace Uie::Render
 	public:
 		void use() const;
 		void disable(GLuint nAttribIndex);
-		void attach(GLuint nBufferIndex, const BufferBase *pBufferBase, GLintptr nOffset = 0, GLsizei nStride = 0, GLuint nInstancePerAdvance = 0);
-		void detach(GLuint nBufferIndex);
-		void detach(const BufferBase *pBufferBase);
+		void attachAttrib(const BufferBase *pBufferBase, GLuint nBufferIndex, GLint nElementPerVertex, GLintptr nOffset = 0, GLsizei nStride = 0, GLuint nInstancePerAdvance = 0);
+		void detachAttrib(GLuint nBufferIndex);
+		void detachAttrib(const BufferBase *pBufferBase);
+		void attachUniform(const BufferBase *pBufferBase, GLuint nBufferIndex);
+		void detachUniform(GLuint nBufferIndex);
+		void detachUniform(const BufferBase *pBufferBase);
+		void enableUniform(const std::string &sUniformName, GLuint nBufferIndex);
+		void disableUniform(const std::string &sUniformName);
+		void activateUniform(std::function<void(const std::string &, GLuint)> fActivator) const;
 	};
 }
 

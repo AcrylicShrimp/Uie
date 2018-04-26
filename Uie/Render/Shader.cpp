@@ -53,8 +53,14 @@ namespace Uie::Render
 		return this->sSubShaderList.back();
 	}
 
-	void Shader::use() const
+	void Shader::use(const ShaderInput &sShaderInput) const
 	{
+		sShaderInput.activateUniform([this](const std::string &sUniformName, GLuint nBufferIndex)
+		{
+			glUniformBlockBinding(this->nIdentifier, glGetUniformBlockIndex(this->nIdentifier, sUniformName.c_str()), nBufferIndex);
+		});
+
+		sShaderInput.use();
 		glUseProgram(this->nIdentifier);
 	}
 
