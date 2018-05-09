@@ -70,7 +70,7 @@ namespace Uie
 			return true;
 		});
 
-		this->sShader[Render::SubShaderType::Vertex].compile(
+		this->sShader[Render::SubShader::Type::Vertex].compile(
 			"#version 450 core\n"
 
 			"layout(std140) uniform Color {\n"
@@ -83,7 +83,7 @@ namespace Uie
 				"gl_Position = vec4(vert_vertex.x, vert_vertex.y, 0.0, 1.0);\n"
 			"}\n"
 		);
-		this->sShader[Render::SubShaderType::Fragment].compile(
+		this->sShader[Render::SubShader::Type::Fragment].compile(
 			"#version 450 core\n"
 
 			"layout(std140) uniform Color {\n"

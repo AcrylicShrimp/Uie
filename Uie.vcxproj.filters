@@ -87,6 +87,18 @@
     <ClCompile Include="Uie\Render\ShaderAttrib.cpp">
       <Filter>Uie\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Uie\Render\RenderTarget.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\RenderBuffer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\Texture.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\GL.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Uie\Window.h">
@@ -180,6 +192,21 @@
       <Filter>Uie\Render</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Render\ShaderAttrib.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\RenderTarget.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\RenderBuffer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Texture.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\GL.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\GL.hpp">
       <Filter>Uie\Render</Filter>
     </ClInclude>
   </ItemGroup>

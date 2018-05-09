@@ -95,7 +95,7 @@ namespace Uie::Render
 		case Type::uInt:
 		case Type::uInt_2AAAr:
 		{
-			glVertexArrayAttribIFormat(this->nIdentifier, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(eType), nAdditionalOffset);
+			glVertexArrayAttribIFormat(this->nIdentifier, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(T), nAdditionalOffset);
 		}
 		break;
 		case Type::Fixed:
@@ -103,12 +103,12 @@ namespace Uie::Render
 		case Type::Float_ABBr:
 		case Type::Half:
 		{
-			glVertexArrayAttribFormat(this->nIdentifier, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(eType), false, nAdditionalOffset);
+			glVertexArrayAttribFormat(this->nIdentifier, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(T), false, nAdditionalOffset);
 		}
 		break;
 		case Type::Double:
 		{
-			glVertexArrayAttribLFormat(this->nIdentifier, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(eType), nAdditionalOffset);
+			glVertexArrayAttribLFormat(this->nIdentifier, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(T), nAdditionalOffset);
 		}
 		break;
 		}
@@ -116,7 +116,7 @@ namespace Uie::Render
 
 	template<ShaderAttrib::Type T> inline void ShaderAttrib::format(GLint nElementPerVertex, GLuint nAdditionalOffset, bool bNormalize)
 	{
-		glVertexArrayAttribFormat(this->nShaderInput, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(eType), bNormalize, nAdditionalOffset);
+		glVertexArrayAttribFormat(this->nShaderInput, this->nAttribIndex, nElementPerVertex, static_cast<GLenum>(T), bNormalize, nAdditionalOffset);
 	}
 
 	template<> inline void ShaderAttrib::format<GLbyte>(GLint nElementPerVertex, GLuint nAdditionalOffset)

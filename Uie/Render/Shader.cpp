@@ -43,7 +43,7 @@ namespace Uie::Render
 		return *this;
 	}
 
-	SubShader &Shader::operator[](SubShaderType eType)
+	SubShader &Shader::operator[](SubShader::Type eType)
 	{
 		for (auto &sSubShader : this->sSubShaderList)
 			if (sSubShader.type() == eType)

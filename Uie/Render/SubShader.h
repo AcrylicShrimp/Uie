@@ -15,25 +15,26 @@
 
 namespace Uie::Render
 {
-	enum class SubShaderType : GLenum
-	{
-		Vertex = GL_VERTEX_SHADER,
-		Fragment = GL_FRAGMENT_SHADER,
-		Geometry = GL_GEOMETRY_SHADER,
-		Compute = GL_COMPUTE_SHADER,
-		TessControl = GL_TESS_CONTROL_SHADER,
-		TessEvaluation = GL_TESS_EVALUATION_SHADER
-	};
-
 	class UIE_DLL SubShader final
 	{
+	public:
+		enum class Type : GLenum
+		{
+			Vertex = GL_VERTEX_SHADER,
+			Fragment = GL_FRAGMENT_SHADER,
+			Geometry = GL_GEOMETRY_SHADER,
+			Compute = GL_COMPUTE_SHADER,
+			TessControl = GL_TESS_CONTROL_SHADER,
+			TessEvaluation = GL_TESS_EVALUATION_SHADER
+		};
+
 	private:
 		GLuint nIdentifier;
 		GLuint nProgram;
-		SubShaderType eType;
+		Type eType;
 		
 	public:
-		SubShader(GLuint nProgram, SubShaderType eType);
+		SubShader(GLuint nProgram, Type eType);
 		SubShader(const SubShader &sSrc) = delete;
 		SubShader(SubShader &&sSrc);
 		~SubShader();
@@ -43,11 +44,11 @@ namespace Uie::Render
 		SubShader &operator=(SubShader &&sSrc);
 		
 	public:
-		inline SubShaderType type() const;
+		inline Type type() const;
 		bool compile(const std::string &sSource, std::string *pCompileLog = nullptr);
 	};
 
-	inline SubShaderType SubShader::type() const
+	inline SubShader::Type SubShader::type() const
 	{
 		return this->eType;
 	}

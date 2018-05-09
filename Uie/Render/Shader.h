@@ -35,7 +35,7 @@ namespace Uie::Render
 	public:
 		Shader &operator=(const Shader &sSrc) = delete;
 		Shader &operator=(Shader &&sSrc);
-		SubShader &operator[](SubShaderType eType);
+		SubShader &operator[](SubShader::Type eType);
 
 	public:
 		void use(const ShaderInput &sShaderInput) const;

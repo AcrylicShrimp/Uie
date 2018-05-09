@@ -8,7 +8,7 @@
 
 namespace Uie::Render
 {
-	SubShader::SubShader(GLuint nProgram, SubShaderType eType) :
+	SubShader::SubShader(GLuint nProgram, Type eType) :
 		nProgram{nProgram},
 		nIdentifier{glCreateShader(static_cast<GLenum>(eType))},
 		eType{eType}
