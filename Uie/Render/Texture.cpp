@@ -12,15 +12,17 @@ namespace Uie::Render
 		nWidth{nWidth},
 		nHeight{nHeight},
 		eFormat{eFormat},
-		bMipmap{bMipmap}
+		bMipmap{bMipmap},
+		nLastActiveIndex{0}
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &this->nIdentifier);
-		glTextureStorage2D(this->nIdentifier, 0, static_cast<GLenum>(this->eFormat), this->nWidth, this->nHeight);
+		glTextureStorage2D(this->nIdentifier, this->bMipmap ? static_cast<GLsizei>(std::floorf(std::log2f(static_cast<float>(std::max(this->nWidth, this->nHeight))))) + 1 : 1, static_cast<GLenum>(this->eFormat), this->nWidth, this->nHeight);
 
 		glCreateSamplers(1, &this->nSamplerIdentifier);
 
 		this->filterMode(FilterMode::Point);
 		this->wrappingMode(WrappingMode::Edge, WrappingMode::Edge);
+		this->anisotropicFiltering(1.f);
 	}
 
 	Texture::Texture(Texture &&sSrc) :
@@ -29,8 +31,13 @@ namespace Uie::Render
 		nWidth{sSrc.nWidth},
 		nHeight{sSrc.nHeight},
 		eFormat{sSrc.eFormat},
-		bMipmap{sSrc.bMipmap}
+		bMipmap{sSrc.bMipmap},
+		nLastActiveIndex{sSrc.nLastActiveIndex}
 	{
+		this->filterMode(sSrc.eFilterMode);
+		this->wrappingMode(sSrc.eWrappingModeS, sSrc.eWrappingModeT);
+		this->anisotropicFiltering(sSrc.nAnisotropicFiltering);
+
 		sSrc.nIdentifier = 0;
 		sSrc.nSamplerIdentifier = 0;
 		sSrc.nWidth = 0;
@@ -49,6 +56,9 @@ namespace Uie::Render
 		this->nSamplerIdentifier = 0;
 		this->nWidth = 0;
 		this->nHeight = 0;
+		this->nLastActiveIndex = 0;
+
+		this->bNeedBind = true;
 	}
 
 	Texture &Texture::operator=(Texture &&sSrc)
@@ -64,20 +74,29 @@ namespace Uie::Render
 		this->nHeight = sSrc.nHeight;
 		this->eFormat = sSrc.eFormat;
 		this->bMipmap = sSrc.bMipmap;
+		this->nLastActiveIndex = sSrc.nLastActiveIndex;
 
+		this->filterMode(sSrc.eFilterMode);
+		this->wrappingMode(sSrc.eWrappingModeS, sSrc.eWrappingModeT);
+		this->anisotropicFiltering(sSrc.nAnisotropicFiltering);
+		
 		sSrc.nIdentifier = 0;
 		sSrc.nSamplerIdentifier = 0;
 		sSrc.nWidth = 0;
 		sSrc.nHeight = 0;
 
+		this->bNeedBind = true;
+
 		return *this;
 	}
 
-	void Texture::use(GLint nIndex) const
+	void Texture::use(GLint nIndex)
 	{
-		glActiveTexture(GL_TEXTURE0 + nIndex);
+		glActiveTexture(GL_TEXTURE0 + (this->nLastActiveIndex = nIndex));
 		glBindTexture(GL_TEXTURE_2D, this->nIdentifier);
 		glBindSampler(nIndex, this->nSamplerIdentifier);
+
+		this->bNeedBind = true;
 	}
 
 	void Texture::filterMode(FilterMode eFilterMode)
@@ -95,5 +114,10 @@ namespace Uie::Render
 	void Texture::anisotropicFiltering(float nAnisotropicFiltering)
 	{
 		glSamplerParameterf(this->nSamplerIdentifier, GL_TEXTURE_MAX_ANISOTROPY_EXT, this->nAnisotropicFiltering = nAnisotropicFiltering);
+	}
+
+	void Texture::bind(GLuint nShaderIdentifier, GLint nUniformLocation) const
+	{
+		glProgramUniform1ui(nShaderIdentifier, nUniformLocation, static_cast<GLuint>(this->nLastActiveIndex));
 	}
 }

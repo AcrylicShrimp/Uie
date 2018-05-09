@@ -11,13 +11,18 @@
 #include "../UieDLL.h"
 
 #include "GL.h"
+#include "UniformBindable.h"
 
+#include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <GL/glew.h>
 
+#include <Windows.h>
+
 namespace Uie::Render
 {
-	class Texture
+	class Texture final : public UniformBindable
 	{
 	public:
 		enum class DataFormat : GLenum
@@ -131,7 +136,7 @@ namespace Uie::Render
 			Repeat = GL_REPEAT
 		};
 
-	private:
+	protected:
 		GLuint nIdentifier;
 		GLuint nSamplerIdentifier;
 		GLsizei nWidth;
@@ -142,6 +147,7 @@ namespace Uie::Render
 		WrappingMode eWrappingModeS;
 		WrappingMode eWrappingModeT;
 		GLfloat nAnisotropicFiltering;
+		GLint nLastActiveIndex;
 
 	public:
 		Texture(GLsizei nWidth, GLsizei nHeight, Format eFormat, bool bMipmap = false);
@@ -162,7 +168,7 @@ namespace Uie::Render
 		inline WrappingMode wrappingModeS() const;
 		inline WrappingMode wrappingModeT() const;
 		inline GLfloat anisotropicFiltering() const;
-		void use(GLint nIndex) const;
+		void use(GLint nIndex);
 		void filterMode(FilterMode eFilterMode);
 		void wrappingMode(WrappingMode eWrappingModeS, WrappingMode eWrappingModeT);
 		void anisotropicFiltering(float nAnisotropicFiltering);
@@ -181,6 +187,9 @@ namespace Uie::Render
 		template<> static constexpr std::size_t elementPerPixel<DataFormat::BGRA>();
 		template<> static constexpr std::size_t elementPerPixel<DataFormat::Depth>();
 		template<> static constexpr std::size_t elementPerPixel<DataFormat::DepthStencil>();
+
+	protected:
+		virtual void bind(GLuint nShaderIdentifier, GLint nUniformLocation) const override;
 	};
 
 	inline GLsizei Texture::width() const
@@ -299,7 +308,7 @@ namespace Uie::Render
 			break;
 		}
 
-		auto nRowStart{static_cast<std::size_t>(pPixel)};
+		auto nRowStart{reinterpret_cast<std::size_t>(pPixel)};
 		auto nRowSize{nWidth * nElementPerPixel * sizeof(T)};
 
 		if (!(nRowStart % 8) && !(nRowSize % 8))
@@ -354,7 +363,7 @@ namespace Uie::Render
 			break;
 		}
 
-		auto nRowStart{static_cast<std::size_t>(pPixel)};
+		auto nRowStart{reinterpret_cast<std::size_t>(pPixel)};
 		auto nRowSize{nWidth * nElementPerPixel / GL::elementCount<T>() * GL::size<T>()};
 
 		if (!(nRowStart % 8) && !(nRowSize % 8))

@@ -29,7 +29,6 @@ namespace Uie::Render
 
 	private:
 		GLuint nIdentifier;
-		//std::unordered_map<AttachmentType,
 		
 	public:
 		RenderTarget();
@@ -40,16 +39,9 @@ namespace Uie::Render
 	public:
 		RenderTarget &operator=(const RenderTarget &sSrc) = delete;
 		RenderTarget &operator=(RenderTarget &&sSrc);
-		/*
-			TODO : Place other operator overloadings here.
-		*/
-		
 		
 	public:
-		/*
-			TODO : Place the member function declarations here.
-		*/
-		
+
 	};
 }
 

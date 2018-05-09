@@ -56,127 +56,127 @@ namespace Uie::Render
 		return GL_DOUBLE;
 	}
 
-	template<GL::Type T> static constexpr GLint GL::size()
+	template<GL::Type T> constexpr GLint GL::size()
 	{
 		static_assert(sizeof(T) == 0, "Unsupported format type.");
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Byte>()
+	template<> constexpr GLint GL::size<GL::Type::Byte>()
 	{
 		return sizeof(GLbyte);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uByte>()
+	template<> constexpr GLint GL::size<GL::Type::uByte>()
 	{
 		return sizeof(GLubyte);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uByte332>()
+	template<> constexpr GLint GL::size<GL::Type::uByte332>()
 	{
 		return sizeof(GLubyte);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uByte233r>()
+	template<> constexpr GLint GL::size<GL::Type::uByte233r>()
 	{
 		return sizeof(GLubyte);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Short>()
+	template<> constexpr GLint GL::size<GL::Type::Short>()
 	{
 		return sizeof(GLshort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uShort>()
+	template<> constexpr GLint GL::size<GL::Type::uShort>()
 	{
 		return sizeof(GLushort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uShort565>()
+	template<> constexpr GLint GL::size<GL::Type::uShort565>()
 	{
 		return sizeof(GLushort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uShort565r>()
+	template<> constexpr GLint GL::size<GL::Type::uShort565r>()
 	{
 		return sizeof(GLushort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uShort4444>()
+	template<> constexpr GLint GL::size<GL::Type::uShort4444>()
 	{
 		return sizeof(GLushort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uShort4444r>()
+	template<> constexpr GLint GL::size<GL::Type::uShort4444r>()
 	{
 		return sizeof(GLushort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uShort5551>()
+	template<> constexpr GLint GL::size<GL::Type::uShort5551>()
 	{
 		return sizeof(GLushort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uShort1555r>()
+	template<> constexpr GLint GL::size<GL::Type::uShort1555r>()
 	{
 		return sizeof(GLushort);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Int>()
+	template<> constexpr GLint GL::size<GL::Type::Int>()
 	{
 		return sizeof(GLint);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Int2AAAr>()
+	template<> constexpr GLint GL::size<GL::Type::Int2AAAr>()
 	{
 		return sizeof(GLint);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uInt>()
+	template<> constexpr GLint GL::size<GL::Type::uInt>()
 	{
 		return sizeof(GLuint);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uInt8888>()
+	template<> constexpr GLint GL::size<GL::Type::uInt8888>()
 	{
 		return sizeof(GLuint);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uInt8888r>()
+	template<> constexpr GLint GL::size<GL::Type::uInt8888r>()
 	{
 		return sizeof(GLuint);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uIntAAA2>()
+	template<> constexpr GLint GL::size<GL::Type::uIntAAA2>()
 	{
 		return sizeof(GLuint);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::uInt2AAAr>()
+	template<> constexpr GLint GL::size<GL::Type::uInt2AAAr>()
 	{
 		return sizeof(GLuint);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Half>()
+	template<> constexpr GLint GL::size<GL::Type::Half>()
 	{
 		return sizeof(GLhalf);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Fixed>()
+	template<> constexpr GLint GL::size<GL::Type::Fixed>()
 	{
 		return sizeof(GLfixed);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Float>()
+	template<> constexpr GLint GL::size<GL::Type::Float>()
 	{
 		return sizeof(GLfloat);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::FloatABBr>()
+	template<> constexpr GLint GL::size<GL::Type::FloatABBr>()
 	{
 		return sizeof(GLfloat);
 	}
 
-	template<> static constexpr GLint GL::size<GL::Type::Double>()
+	template<> constexpr GLint GL::size<GL::Type::Double>()
 	{
 		return sizeof(GLdouble);
 	}

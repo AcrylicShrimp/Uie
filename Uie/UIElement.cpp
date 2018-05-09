@@ -4,6 +4,8 @@
 	Created by AcrylicShrimp.
 */
 
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "UIElement.h"
 
 #include "UIPlacement.h"
@@ -13,32 +15,33 @@ namespace Uie
 	UIElement::UIElement(UIPlacement *pPlacement, const std::wstring &sName) :
 		pPlacement{pPlacement},
 		nOrder{0},
-		sName{sName}
+		sName{sName},
+		sTexture{1200, 630, Render::Texture::Format::RGB888}
 	{
 		this->bFocused = false;
-		this->sColor = Color(.0f, .0f, .0f, .25f);
+		this->sColor = Color(.5f, .5f, .5f, .75f);
 
 		this->UIEventHandler::addHandler("mouse.enter", [this](const std::string &sIdentifier, void *pParam)
 		{
-			this->sColor = Color(1.f, .0f, .0f, .25f);
+			this->sColor = Color(1.f, .5f, .5f, .75f);
 			return true;
 		});
 
 		this->UIEventHandler::addHandler("mouse.leave", [this](const std::string &sIdentifier, void *pParam)
 		{
-			this->sColor = Color(.0f, .0f, .0f, .25f);
+			this->sColor = Color(.5f, .5f, .5f, .75f);
 			return true;
 		});
 
 		this->UIEventHandler::addHandler("keyboard.down", [this](const std::string &sIdentifier, void *pParam)
 		{
-			this->sColor = Color(1.f, .0f, .0f, .25f);
+			this->sColor = Color(1.f, .5f, .5f, .75f);
 			return true;
 		});
 
 		this->UIEventHandler::addHandler("keyboard.up", [this](const std::string &sIdentifier, void *pParam)
 		{
-			this->sColor = Color(.0f, .0f, .0f, .25f);
+			this->sColor = Color(.5f, .5f, .5f, .75f);
 			return true;
 		});
 
@@ -73,27 +76,33 @@ namespace Uie
 		this->sShader[Render::SubShader::Type::Vertex].compile(
 			"#version 450 core\n"
 
-			"layout(std140) uniform Color {\n"
-				"vec4 color;\n"
-			"} global;\n"
+			"uniform sampler2D uniform_texture;\n"
 
 			"layout(location = 0) in vec2 vert_vertex;\n"
+			"layout(location = 1) in vec2 vert_uv;\n"
+			"layout(location = 2) in vec4 vert_color;\n"
+
+			"smooth out vec2 frag_uv;\n"
+			"smooth out vec4 frag_color;\n"
 
 			"void main() {\n"
-				"gl_Position = vec4(vert_vertex.x, vert_vertex.y, 0.0, 1.0);\n"
+			"gl_Position = vec4(vert_vertex.x, vert_vertex.y, 0.0, 1.0);\n"
+			"frag_uv = vert_uv;\n"
+			"frag_color = vert_color;\n"
 			"}\n"
 		);
 		this->sShader[Render::SubShader::Type::Fragment].compile(
 			"#version 450 core\n"
 
-			"layout(std140) uniform Color {\n"
-				"vec4 color;\n"
-			"} global;\n"
+			"uniform sampler2D uniform_texture;\n"
+
+			"smooth in vec2 frag_uv;\n"
+			"smooth in vec4 frag_color;\n"
 
 			"layout(location = 0) out vec4 frag_output;\n"
 
 			"void main() {\n"
-				"frag_output = global.color;\n"
+			"frag_output = vec4(texture(uniform_texture, frag_uv).rgb * frag_color.rgb, frag_color.a);\n"
 			"}\n"
 		);
 
@@ -101,12 +110,42 @@ namespace Uie
 
 		this->sShader.link(&sLinkLog);
 
-		this->sShaderInput.enableUniform("Color", 0);
-		this->sShaderInput.attachUniform(&this->sColorBuffer, 0);
+		this->sShaderInput.attachUniform("uniform_texture", &this->sTexture);
 
-		this->sShaderInput[0]->use(0);
 		this->sShaderInput[0]->format<float>(2);
-		this->sShaderInput.attachAttrib(&this->sVertexBuffer, 0, 2);
+		this->sShaderInput[0]->use(0);
+		this->sShaderInput.attachAttrib(0, &this->sVertexBuffer, 2);
+
+		this->sShaderInput[1]->format<float>(2);
+		this->sShaderInput[1]->use(1);
+		this->sShaderInput.attachAttrib(1, &this->sUVBuffer, 2);
+
+		this->sShaderInput[2]->format<float>(4);
+		this->sShaderInput[2]->use(2);
+		this->sShaderInput.attachAttrib(2, &this->sColorBuffer, 4, 0, 0, 1);
+
+		{
+			std::ifstream sInput{L"cat.jpg", std::ifstream::ate | std::ifstream::binary | std::ifstream::in};
+			auto nTextureSize{sInput.tellg()};
+
+			auto *const pTexture{new uint8_t[static_cast<std::size_t>(nTextureSize)]};
+
+			sInput.seekg(0, std::ifstream::_Seekdir::_Seekbeg);
+			sInput.read(reinterpret_cast<char *const>(pTexture), nTextureSize);
+
+			int nWidth, nHeight, nChannel;
+
+			auto *pPixel{stbi_load_from_memory(pTexture, static_cast<int>(nTextureSize), &nWidth, &nHeight, &nChannel, 0)};
+			delete pTexture;
+
+			this->sTexture.fill(Render::Texture::DataFormat::RGB, pPixel);
+
+			stbi_image_free(pPixel);
+		}
+
+		this->sTexture.filterMode(Render::Texture::FilterMode::Trilinear);
+		this->sTexture.wrappingMode(Render::Texture::WrappingMode::Edge, Render::Texture::WrappingMode::Edge);
+		this->sTexture.anisotropicFiltering(1.f);
 	}
 
 	void UIElement::update()
@@ -117,9 +156,8 @@ namespace Uie
 	void UIElement::render()
 	{
 		//TODO : Remove below.
-		this->sColorBuffer = {
-			this->sColor.nR, this->sColor.nG, this->sColor.nB, .35f
-		};
+
+		this->sTexture.use(0);
 
 		this->sVertexBuffer = {
 			this->sRect.nL, -this->sRect.nT,
@@ -128,16 +166,23 @@ namespace Uie
 			this->sRect.nR, -this->sRect.nT
 		};
 
+		this->sUVBuffer = {
+			.0f, .0f,
+			.0f, 1.f,
+			1.f, 1.f,
+			1.f, .0f
+		};
+
+		this->sColorBuffer = {
+			this->sColor.nR, this->sColor.nG, this->sColor.nB, this->sColor.nA
+		};
+
 		this->sShader.use(this->sShaderInput);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 		if (!this->bFocused)
 			return;
-
-		this->sColorBuffer = {
-			1.f, .0f, 1.f, 1.f
-		};
 
 		glLineWidth(2.f);
 		glDrawArrays(GL_LINE_LOOP, 0, 4);

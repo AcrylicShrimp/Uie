@@ -26,6 +26,9 @@
 #include "Render/ShaderAttrib.h"
 #include "Render/ShaderInput.h"
 #include "Render/SubShader.h"
+#include "Render/Texture.h"
+#include <fstream>
+#include <stb/stb_image.h>
 #include <Gl/glew.h>
 #include <Windows.h>
 
@@ -44,10 +47,12 @@ namespace Uie
 		//TODO : Remove below.
 		bool bFocused;
 		Color sColor;
-		Render::Buffer<float> sColorBuffer;
 		Render::Buffer<float> sVertexBuffer;
+		Render::Buffer<float> sUVBuffer;
+		Render::Buffer<float> sColorBuffer;
 		Render::Shader sShader;
 		Render::ShaderInput sShaderInput;
+		Render::Texture sTexture;
 
 	public:
 		UIElement(UIPlacement *pPlacement, const std::wstring &sName);

@@ -73,7 +73,7 @@ namespace Uie::Render
 		this->sAttribMap.erase(nAttribIndex);
 	}
 
-	void ShaderInput::attachAttrib(const BufferBase *pBufferBase, GLuint nBufferIndex, GLint nElementPerVertex, GLintptr nOffset, GLsizei nStride, GLuint nInstancePerAdvance)
+	void ShaderInput::attachAttrib(GLuint nBufferIndex, const BufferBase *pBufferBase, GLint nElementPerVertex, GLintptr nOffset, GLsizei nStride, GLuint nInstancePerAdvance)
 	{
 		glVertexArrayBindingDivisor(this->nIdentifier, nBufferIndex, nInstancePerAdvance);
 		glVertexArrayVertexBuffer(this->nIdentifier, nBufferIndex, pBufferBase->identifier(), nOffset, nStride ? nStride : (pBufferBase->elementSize() * nElementPerVertex));
@@ -132,6 +132,11 @@ namespace Uie::Render
 		this->sUniformBufferIndexMap[pBufferBase].emplace_back(nBufferIndex);
 	}
 
+	void ShaderInput::attachUniform(const std::string &sUniformName, const UniformBindable *pUniformBindable)
+	{
+		this->sUniformBindableMap[sUniformName] = pUniformBindable;
+	}
+
 	void ShaderInput::detachUniform(GLuint nBufferIndex)
 	{
 		auto iIndex{this->sUniformBufferMap.find(nBufferIndex)};
@@ -164,6 +169,11 @@ namespace Uie::Render
 		this->sUniformBufferIndexMap.erase(pBufferBase);
 	}
 
+	void ShaderInput::detachUniform(const std::string &sUniformName)
+	{
+		this->sUniformBindableMap.erase(sUniformName);
+	}
+
 	void ShaderInput::enableUniform(const std::string &sUniformName, GLuint nBufferIndex)
 	{
 		this->sUniformMap[sUniformName] = nBufferIndex;
@@ -178,5 +188,11 @@ namespace Uie::Render
 	{
 		for (const auto &sPair : this->sUniformMap)
 			fActivator(sPair.first, sPair.second);
+	}
+
+	void ShaderInput::bindUniformBindable(GLuint nShaderIdentifier, std::function<GLint(const std::string &)> fUniformLocationGenerator) const
+	{
+		for (const auto &sPair : this->sUniformBindableMap)
+			sPair.second->bindUniform(nShaderIdentifier, fUniformLocationGenerator(sPair.first));
 	}
 }

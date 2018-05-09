@@ -12,6 +12,7 @@
 
 #include "Buffer.h"
 #include "ShaderAttrib.h"
+#include "UniformBindable.h"
 
 #include <functional>
 #include <string>
@@ -32,6 +33,7 @@ namespace Uie::Render
 		std::unordered_map<std::string, GLuint> sUniformMap;
 		std::unordered_map<GLuint, const BufferBase *> sUniformBufferMap;
 		std::unordered_map<const BufferBase *, std::vector<GLuint>> sUniformBufferIndexMap;
+		std::unordered_map<std::string, const UniformBindable *> sUniformBindableMap;
 		
 	public:
 		ShaderInput();
@@ -48,15 +50,18 @@ namespace Uie::Render
 	public:
 		void use() const;
 		void disable(GLuint nAttribIndex);
-		void attachAttrib(const BufferBase *pBufferBase, GLuint nBufferIndex, GLint nElementPerVertex, GLintptr nOffset = 0, GLsizei nStride = 0, GLuint nInstancePerAdvance = 0);
+		void attachAttrib(GLuint nBufferIndex, const BufferBase *pBufferBase, GLint nElementPerVertex, GLintptr nOffset = 0, GLsizei nStride = 0, GLuint nInstancePerAdvance = 0);
 		void detachAttrib(GLuint nBufferIndex);
 		void detachAttrib(const BufferBase *pBufferBase);
 		void attachUniform(const BufferBase *pBufferBase, GLuint nBufferIndex);
+		void attachUniform(const std::string &sUniformName, const UniformBindable *pUniformBindable);
 		void detachUniform(GLuint nBufferIndex);
 		void detachUniform(const BufferBase *pBufferBase);
+		void detachUniform(const std::string &sUniformName);
 		void enableUniform(const std::string &sUniformName, GLuint nBufferIndex);
 		void disableUniform(const std::string &sUniformName);
 		void activateUniform(std::function<void(const std::string &, GLuint)> fActivator) const;
+		void bindUniformBindable(GLuint nShaderIdentifier, std::function<GLint(const std::string &)> fUniformLocationGenerator) const;
 	};
 }
 

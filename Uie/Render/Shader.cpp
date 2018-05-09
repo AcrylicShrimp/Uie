@@ -59,6 +59,10 @@ namespace Uie::Render
 		{
 			glUniformBlockBinding(this->nIdentifier, glGetUniformBlockIndex(this->nIdentifier, sUniformName.c_str()), nBufferIndex);
 		});
+		sShaderInput.bindUniformBindable(this->nIdentifier, [this](const std::string &sUniformName)
+		{
+			return this->getUniformLocation(sUniformName);
+		});
 
 		sShaderInput.use();
 		glUseProgram(this->nIdentifier);

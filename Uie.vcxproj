@@ -176,7 +176,6 @@
     <ClInclude Include="Uie\Render\Buffer.hpp" />
     <ClInclude Include="Uie\Render\GL.h" />
     <ClInclude Include="Uie\Render\GL.hpp" />
-    <ClInclude Include="Uie\Render\IShaderInput.h" />
     <ClInclude Include="Uie\Render\RenderBuffer.h" />
     <ClInclude Include="Uie\Render\Renderer.h" />
     <ClInclude Include="Uie\Render\RenderTarget.h" />
@@ -185,6 +184,7 @@
     <ClInclude Include="Uie\Render\ShaderInput.h" />
     <ClInclude Include="Uie\Render\SubShader.h" />
     <ClInclude Include="Uie\Render\Texture.h" />
+    <ClInclude Include="Uie\Render\UniformBindable.h" />
     <ClInclude Include="Uie\UieDLL.h" />
     <ClInclude Include="Uie\UIElement.h" />
     <ClInclude Include="Uie\UIEventHandler.h" />

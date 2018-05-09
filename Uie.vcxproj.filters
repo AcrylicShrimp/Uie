@@ -179,9 +179,6 @@
     <ClInclude Include="Uie\Render\SubShader.h">
       <Filter>Uie\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Uie\Render\IShaderInput.h">
-      <Filter>Uie\Render</Filter>
-    </ClInclude>
     <ClInclude Include="Uie\Render\Buffer.h">
       <Filter>Uie\Render</Filter>
     </ClInclude>
@@ -207,6 +204,9 @@
       <Filter>Uie\Render</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Render\GL.hpp">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\UniformBindable.h">
       <Filter>Uie\Render</Filter>
     </ClInclude>
   </ItemGroup>
