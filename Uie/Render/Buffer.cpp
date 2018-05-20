@@ -32,6 +32,8 @@ namespace Uie::Render
 		if (&sSrc == this)
 			return *this;
 
+		this->ContextObject::operator=(std::move(sSrc));
+
 		this->~BufferBase();
 
 		this->nIdentifier = sSrc.nIdentifier;

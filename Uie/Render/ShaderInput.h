@@ -23,7 +23,7 @@
 
 namespace Uie::Render
 {
-	class ShaderInput final
+	class UIE_DLL ShaderInput final
 	{
 	private:
 		GLuint nIdentifier;

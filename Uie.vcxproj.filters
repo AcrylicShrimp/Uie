@@ -99,6 +99,24 @@
     <ClCompile Include="Uie\Render\GL.cpp">
       <Filter>Uie\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Uie\Render\DepthRenderBuffer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\ColorRenderBuffer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\StencilRenderBuffer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\DepthStencilRenderBuffer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\Context.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\ContextObject.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Uie\Window.h">
@@ -207,6 +225,27 @@
       <Filter>Uie\Render</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Render\UniformBindable.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Renderable.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\DepthRenderBuffer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\ColorRenderBuffer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\StencilRenderBuffer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\DepthStencilRenderBuffer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Context.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\ContextObject.h">
       <Filter>Uie\Render</Filter>
     </ClInclude>
   </ItemGroup>

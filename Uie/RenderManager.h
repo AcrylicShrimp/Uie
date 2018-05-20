@@ -16,6 +16,7 @@
 #include "Window.h"
 #include "WindowManager.h"
 #include "WindowMessageHandler.h"
+#include "Render/Context.h"
 
 #include <unordered_map>
 #include <Windows.h>
@@ -44,6 +45,7 @@ namespace Uie
 		
 	public:
 		void applyRenderProperties(Window *pWindow, const RenderProperties &sRenderProperties);
+		void repaint();
 		void repaint(Window *pWindow);
 		virtual LRESULT handleWindowMessage(Window *pWindow, HWND hWindow, UINT nMessage, WPARAM wParam, LPARAM lParam) override;
 

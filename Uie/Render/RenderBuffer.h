@@ -8,46 +8,38 @@
 
 #define _CLASS_UIE_RENDER_RENDERBUFFER_H
 
-/*
-	TODO : Place the include directives here.
-*/
+#include "../UieDLL.h"
 
+#include "ContextObject.h"
+#include "Renderable.h"
 
 #include <utility>
+#include <GL/glew.h>
 
 namespace Uie::Render
 {
-	class RenderBuffer
+	class UIE_DLL RenderBuffer : public Renderable, public ContextObject
 	{
-	private:
-		/*
-			TODO : Place the class member variable declarations here.
-		*/
-		
+	protected:
+		GLuint nIdentifier;
+		GLsizei nWidth;
+		GLsizei nHeight;
 		
 	public:
-		RenderBuffer();
-		RenderBuffer(const RenderBuffer &sSrc);
+		RenderBuffer(GLsizei nWidth, GLsizei nHeight, GLenum nType);
+		RenderBuffer(const RenderBuffer &sSrc) = delete;
 		RenderBuffer(RenderBuffer &&sSrc);
 		~RenderBuffer();
-		/*
-			TODO : Place the declarations of other constructors here.
-		*/
-		
 		
 	public:
-		RenderBuffer &operator=(const RenderBuffer &sSrc);
+		RenderBuffer &operator=(const RenderBuffer &sSrc) = delete;
 		RenderBuffer &operator=(RenderBuffer &&sSrc);
-		/*
-			TODO : Place other operator overloadings here.
-		*/
 		
-		
-	public:
-		/*
-			TODO : Place the member function declarations here.
-		*/
-		
+	protected:
+		virtual GLuint identifier() const override;
+		virtual GLsizei width() const override;
+		virtual GLsizei height() const override;
+		virtual bool texture() const override;
 	};
 }
 

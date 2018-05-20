@@ -28,7 +28,7 @@ namespace Uie
 	class UIE_DLL UIPlacement final
 	{
 	public:
-		enum class IterateOrder
+		enum class IterationOrder
 		{
 			FrontToBack,
 			BackToFront
@@ -56,7 +56,7 @@ namespace Uie
 		void rootElement(UIElement *pElement);
 		void unrootElement(UIElement *pElement);
 		void changeOrder(UIElement *pElement, int64_t nOrder);
-		void iterateAll(IterateOrder eIterateOrder, std::function<bool(UIElement *)> fIterateFunc);
+		void iterateAll(IterationOrder eIterateOrder, std::function<bool(UIElement *)> fIterateFunc);
 		void renderAll();
 		void updateAll();
 	};

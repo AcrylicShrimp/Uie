@@ -8,6 +8,8 @@
 
 #define _CLASS_UIE_RENDER_BUFFER_H
 
+#include "ContextObject.h"
+
 #include <algorithm>
 #include <cstddef>
 #include <initializer_list>
@@ -17,7 +19,7 @@
 
 namespace Uie::Render
 {
-	class BufferBase
+	class BufferBase : public ContextObject
 	{
 	protected:
 		GLuint nIdentifier;

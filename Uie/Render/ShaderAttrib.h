@@ -14,7 +14,7 @@
 
 namespace Uie::Render
 {
-	class ShaderAttrib final
+	class UIE_DLL ShaderAttrib final
 	{
 	public:
 		enum class Type : GLenum

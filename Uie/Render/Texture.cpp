@@ -66,6 +66,9 @@ namespace Uie::Render
 		if (&sSrc == this)
 			return *this;
 
+		this->Renderable::operator=(std::move(sSrc));
+		this->UniformBindable::operator=(std::move(sSrc));
+
 		this->~Texture();
 
 		this->nIdentifier = sSrc.nIdentifier;
@@ -114,6 +117,26 @@ namespace Uie::Render
 	void Texture::anisotropicFiltering(float nAnisotropicFiltering)
 	{
 		glSamplerParameterf(this->nSamplerIdentifier, GL_TEXTURE_MAX_ANISOTROPY_EXT, this->nAnisotropicFiltering = nAnisotropicFiltering);
+	}
+
+	GLuint Texture::identifier() const
+	{
+		return this->nIdentifier;
+	}
+
+	GLsizei Texture::width() const
+	{
+		return this->nWidth;
+	}
+
+	GLsizei Texture::height() const
+	{
+		return this->nHeight;
+	}
+
+	bool Texture::texture() const
+	{
+		return true;
 	}
 
 	void Texture::bind(GLuint nShaderIdentifier, GLint nUniformLocation) const

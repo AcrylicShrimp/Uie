@@ -30,20 +30,20 @@ namespace Uie
 			Window::sWindowMap.erase(hWindowHandle);
 	}
 
-	bool Window::createWindow(const WindowAttribute &sWindowAttribute)
+	bool Window::createWindow(const Attribute &sAttribute)
 	{
 		WNDCLASSW sClass
 		{
-			static_cast<UINT>(sWindowAttribute.eClassStyle),
+			static_cast<UINT>(sAttribute.eClassStyle),
 			Window::windowMessageProcedure,
 			0,
 			0,
 			this->hInstance = GetModuleHandleW(nullptr),
-			sWindowAttribute.hIcon,
-			sWindowAttribute.hCursor,
-			sWindowAttribute.hBackgroundBrush,
-			sWindowAttribute.pMenuName,
-			(this->sClassName = sWindowAttribute.sClassName).c_str()
+			sAttribute.hIcon,
+			sAttribute.hCursor,
+			sAttribute.hBackgroundBrush,
+			sAttribute.pMenuName,
+			(this->sClassName = sAttribute.sClassName).c_str()
 		};
 
 		if (!RegisterClassW(&sClass))
@@ -56,31 +56,31 @@ namespace Uie
 		{
 			0l,
 			0l,
-			static_cast<LONG>(sWindowAttribute.nWidth),
-			static_cast<LONG>(sWindowAttribute.nHeight)
+			static_cast<LONG>(sAttribute.nWidth),
+			static_cast<LONG>(sAttribute.nHeight)
 		};
 
-		if (sWindowAttribute.eSizingMode == SizingMode::ClientAreaOnly)
+		if (sAttribute.eSizingMode == SizingMode::ClientAreaOnly)
 		{
-			AdjustWindowRectEx(&sClientRect, static_cast<DWORD>(sWindowAttribute.eWindowStyle), sWindowAttribute.pMenuName != nullptr, static_cast<DWORD>(sWindowAttribute.eExtendedWindowStyle));
+			AdjustWindowRectEx(&sClientRect, static_cast<DWORD>(sAttribute.eStyle), sAttribute.pMenuName != nullptr, static_cast<DWORD>(sAttribute.eExtendedStyle));
 
 			sClientRect.right -= sClientRect.left;
 			sClientRect.bottom -= sClientRect.top;
 		}
 
 		if (!(this->hWindow = CreateWindowExW(
-			static_cast<DWORD>(sWindowAttribute.eExtendedWindowStyle),
-			sWindowAttribute.sClassName.c_str(),
-			sWindowAttribute.sTitleText.c_str(),
-			static_cast<DWORD>(sWindowAttribute.eWindowStyle),
-			sWindowAttribute.nX,
-			sWindowAttribute.nY,
+			static_cast<DWORD>(sAttribute.eExtendedStyle),
+			sAttribute.sClassName.c_str(),
+			sAttribute.sTitleText.c_str(),
+			static_cast<DWORD>(sAttribute.eStyle),
+			sAttribute.nX,
+			sAttribute.nY,
 			sClientRect.right,
 			sClientRect.bottom,
-			sWindowAttribute.hParentWindow,
-			sWindowAttribute.hMenu,
+			sAttribute.hParentWindow,
+			sAttribute.hMenu,
 			this->hInstance,
-			sWindowAttribute.pExtraPointer)))
+			sAttribute.pExtraPointer)))
 		{
 			this->destroyWindow();
 			return false;
@@ -91,166 +91,9 @@ namespace Uie
 		return true;
 	}
 
-	bool Window::createContext(BYTE nColorBit, BYTE nDepthBit, PixelBufferProperties eNewPixelBufferProperties, PixelBufferPixelType eNewPixelBufferPixelType)
+	bool Window::setVisible(Visibility eNewVisibility)
 	{
-		if (!(this->sWindowInfo.hDeviceContext = GetDC(this->hWindow)))
-		{
-			this->sWindowInfo.hDeviceContext = nullptr;
-			return false;
-		}
-
-		PIXELFORMATDESCRIPTOR sFormat
-		{
-			sizeof(PIXELFORMATDESCRIPTOR),
-			1,
-			static_cast<DWORD>(eNewPixelBufferProperties),
-			static_cast<BYTE>(eNewPixelBufferPixelType),
-			nColorBit,
-			0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			nDepthBit,
-			0,
-			0,
-			0,
-			0,
-			0, 0, 0
-		};
-
-		auto nPixelFormat{ChoosePixelFormat(this->sWindowInfo.hDeviceContext, &sFormat)};
-
-		if (!nPixelFormat)
-		{
-			ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
-			this->sWindowInfo.hDeviceContext = nullptr;
-			this->sWindowInfo.hRenderingContext = nullptr;
-
-			return false;
-		}
-
-		if (!SetPixelFormat(this->sWindowInfo.hDeviceContext, nPixelFormat, &sFormat))
-		{
-			ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
-			this->sWindowInfo.hDeviceContext = nullptr;
-			this->sWindowInfo.hRenderingContext = nullptr;
-
-			return false;
-		}
-
-		SendMessage(this->hWindow, WM_UIE_CONTEXT_CREAT, 0, 0);
-
-		return true;
-	}
-
-	bool Window::createOpenGLContext(BYTE nColorBit, BYTE nDepthBit, PixelBufferProperties eNewPixelBufferProperties, PixelBufferPixelType eNewPixelBufferPixelType)
-	{
-		if (!(this->sWindowInfo.hDeviceContext = GetDC(this->hWindow)))
-		{
-			this->sWindowInfo.hDeviceContext = nullptr;
-			return false;
-		}
-
-		PIXELFORMATDESCRIPTOR sFormat
-		{
-			sizeof(PIXELFORMATDESCRIPTOR),
-			1,
-			static_cast<DWORD>(eNewPixelBufferProperties),
-			static_cast<BYTE>(eNewPixelBufferPixelType),
-			nColorBit,
-			0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			nDepthBit,
-			0,
-			0,
-			0,
-			0,
-			0, 0, 0
-		};
-
-		auto nPixelFormat{ChoosePixelFormat(this->sWindowInfo.hDeviceContext, &sFormat)};
-
-		if (!nPixelFormat)
-		{
-			ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
-			this->sWindowInfo.hDeviceContext = nullptr;
-			this->sWindowInfo.hRenderingContext = nullptr;
-
-			return false;
-		}
-
-		if (!SetPixelFormat(this->sWindowInfo.hDeviceContext, nPixelFormat, &sFormat))
-		{
-			ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
-			this->sWindowInfo.hDeviceContext = nullptr;
-			this->sWindowInfo.hRenderingContext = nullptr;
-
-			return false;
-		}
-
-		SendMessage(this->hWindow, WM_UIE_CONTEXT_CREAT, 0, 0);
-
-		if (!(this->sWindowInfo.hRenderingContext = wglCreateContext(this->sWindowInfo.hDeviceContext)))
-		{
-			SendMessage(this->hWindow, WM_UIE_CONTEXT_DESTROY, 0, 0);
-
-			ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
-			this->sWindowInfo.hDeviceContext = nullptr;
-			this->sWindowInfo.hRenderingContext = nullptr;
-
-			return false;
-		}
-
-		SendMessage(this->hWindow, WM_UIE_OPENGL_CONTEXT_CREAT, 0, 0);
-
-		return true;
-	}
-
-	void Window::destroyContext()
-	{
-		if (this->sWindowInfo.hRenderingContext)
-		{
-			SendMessage(this->hWindow, WM_UIE_OPENGL_CONTEXT_DESTROY, 0, 0);
-			wglDeleteContext(this->sWindowInfo.hRenderingContext);
-		}
-
-		this->sWindowInfo.hRenderingContext = nullptr;
-
-		ReleaseDC(this->hWindow, this->sWindowInfo.hDeviceContext);
-		this->sWindowInfo.hDeviceContext = nullptr;
-
-		SendMessage(this->hWindow, WM_UIE_CONTEXT_DESTROY, 0, 0);
-	}
-
-	bool Window::linkCurrentThread() const
-	{
-		if (wglMakeCurrent(this->sWindowInfo.hDeviceContext, this->sWindowInfo.hRenderingContext))
-		{
-			SendMessage(this->hWindow, WM_UIE_LINK_CONTEXT, 0, 0);
-			return true;
-		}
-		else
-			return false;
-	}
-
-	bool Window::linkCurrentThread(HGLRC hRenderingContext) const
-	{
-		if (wglMakeCurrent(this->sWindowInfo.hDeviceContext, hRenderingContext))
-		{
-			SendMessage(this->hWindow, WM_UIE_LINK_CONTEXT, 0, 0);
-			return true;
-		}
-		else
-			return false;
-	}
-
-	void Window::unlinkCurrentThread() const
-	{
-		SendMessage(this->hWindow, WM_UIE_UNLINK_CONTEXT, 0, 0);
-		wglMakeCurrent(nullptr, nullptr);
-	}
-
-	bool Window::setVisible(WindowVisibility eNewWindowVisibility)
-	{
-		return ShowWindow(this->hWindow, static_cast<int>(eNewWindowVisibility));
+		return ShowWindow(this->hWindow, static_cast<int>(eNewVisibility));
 	}
 
 	void Window::setFileDraggable(bool bNewDraggable)
@@ -324,13 +167,13 @@ namespace Uie
 			GetWindowRect(hWindow, &sWindowRect);
 			GetClientRect(hWindow, &sClientRect);
 
-			this->sWindowInfo.nEntireX = sWindowRect.left;
-			this->sWindowInfo.nEntireY = sWindowRect.top;
-			this->sWindowInfo.nEntireWidth = sWindowRect.right - sWindowRect.left;
-			this->sWindowInfo.nEntireHeight = sWindowRect.bottom - sWindowRect.top;
+			this->sSizeInfo.nEntireX = sWindowRect.left;
+			this->sSizeInfo.nEntireY = sWindowRect.top;
+			this->sSizeInfo.nEntireWidth = sWindowRect.right - sWindowRect.left;
+			this->sSizeInfo.nEntireHeight = sWindowRect.bottom - sWindowRect.top;
 
-			this->sWindowInfo.nClientWidth = sClientRect.right - sClientRect.left;
-			this->sWindowInfo.nClientHeight = sClientRect.bottom - sClientRect.top;
+			this->sSizeInfo.nClientWidth = sClientRect.right - sClientRect.left;
+			this->sSizeInfo.nClientHeight = sClientRect.bottom - sClientRect.top;
 
 			nResult = 0;
 		}

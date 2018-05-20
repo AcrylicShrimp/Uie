@@ -11,18 +11,20 @@
 #include "../UieDLL.h"
 
 #include "GL.h"
+#include "Renderable.h"
 #include "UniformBindable.h"
 
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <utility>
 #include <GL/glew.h>
 
 #include <Windows.h>
 
 namespace Uie::Render
 {
-	class Texture final : public UniformBindable
+	class UIE_DLL Texture final : public Renderable, public UniformBindable
 	{
 	public:
 		enum class DataFormat : GLenum
@@ -34,23 +36,34 @@ namespace Uie::Render
 			RGBA = GL_RGBA,
 			BGRA = GL_BGRA,
 			Depth = GL_DEPTH_COMPONENT,
+			Stencil = GL_STENCIL_INDEX,
 			DepthStencil = GL_DEPTH_STENCIL
 		};
 
 		enum class Format : GLenum
 		{
+			D = GL_DEPTH_COMPONENT,
+			D16 = GL_DEPTH_COMPONENT16,
+			D24 = GL_DEPTH_COMPONENT24,
+			D32 = GL_DEPTH_COMPONENT32,
+			D32F = GL_DEPTH_COMPONENT32F,
+			S = GL_STENCIL_INDEX,
+			S1 = GL_STENCIL_INDEX1,
+			S4 = GL_STENCIL_INDEX4,
+			S8 = GL_STENCIL_INDEX8,
+			S16 = GL_STENCIL_INDEX16,
+			DS = GL_DEPTH_STENCIL,
+			DS248 = GL_DEPTH24_STENCIL8,
+			DS32F8 = GL_DEPTH32F_STENCIL8,
 			R = GL_RED,
-			RG = GL_RG,
-			RGB = GL_RGB,
-			RGBA = GL_RGBA,
-			Depth = GL_DEPTH_COMPONENT,
-			DepthStencil = GL_DEPTH_STENCIL,
 			R8 = GL_R8,
 			R8SN = GL_R8_SNORM,
 			R16 = GL_R16,
 			R16SN = GL_R16_SNORM,
+			RG = GL_RG,
 			RG88 = GL_RG8,
 			RG88SN = GL_RG8_SNORM,
+			RGB = GL_RGB,
 			RGB332 = GL_R3_G3_B2,
 			RGB444 = GL_RGB4,
 			RGB555 = GL_RGB5,
@@ -59,6 +72,7 @@ namespace Uie::Render
 			RGB101010 = GL_RGB10,
 			RGB121212 = GL_RGB12,
 			RGB161616SN = GL_RGB16_SNORM,
+			RGBA = GL_RGBA,
 			RGBA2222 = GL_RGBA2,
 			RGBA4444 = GL_RGBA4,
 			RGBA5551 = GL_RGB5_A1,
@@ -160,8 +174,6 @@ namespace Uie::Render
 		Texture &operator=(Texture &&sSrc);
 
 	public:
-		inline GLsizei width() const;
-		inline GLsizei height() const;
 		inline Format format() const;
 		inline bool mipmap() const;
 		inline FilterMode filterMode() const;
@@ -186,21 +198,16 @@ namespace Uie::Render
 		template<> static constexpr std::size_t elementPerPixel<DataFormat::RGBA>();
 		template<> static constexpr std::size_t elementPerPixel<DataFormat::BGRA>();
 		template<> static constexpr std::size_t elementPerPixel<DataFormat::Depth>();
+		template<> static constexpr std::size_t elementPerPixel<DataFormat::Stencil>();
 		template<> static constexpr std::size_t elementPerPixel<DataFormat::DepthStencil>();
 
 	protected:
+		virtual GLuint identifier() const override;
+		virtual GLsizei width() const override;
+		virtual GLsizei height() const override;
+		virtual bool texture() const override;
 		virtual void bind(GLuint nShaderIdentifier, GLint nUniformLocation) const override;
 	};
-
-	inline GLsizei Texture::width() const
-	{
-		return this->nWidth;
-	}
-
-	inline GLsizei Texture::height() const
-	{
-		return this->nHeight;
-	}
 
 	inline Texture::Format Texture::format() const
 	{
@@ -303,6 +310,10 @@ namespace Uie::Render
 			nElementPerPixel = Texture::elementPerPixel<DataFormat::Depth>();
 			break;
 
+		case DataFormat::Stencil:
+			nElementPerPixel = Texture::elementPerPixel<DataFormat::Stencil>();
+			break;
+
 		case DataFormat::DepthStencil:
 			nElementPerPixel = Texture::elementPerPixel<DataFormat::DepthStencil>();
 			break;
@@ -356,6 +367,10 @@ namespace Uie::Render
 
 		case DataFormat::Depth:
 			nElementPerPixel = Texture::elementPerPixel<DataFormat::Depth>();
+			break;
+
+		case DataFormat::Stencil:
+			nElementPerPixel = Texture::elementPerPixel<DataFormat::Stencil>();
 			break;
 
 		case DataFormat::DepthStencil:
@@ -414,6 +429,11 @@ namespace Uie::Render
 	}
 
 	template<> constexpr std::size_t Texture::elementPerPixel<Texture::DataFormat::Depth>()
+	{
+		return 1;
+	}
+
+	template<> constexpr std::size_t Texture::elementPerPixel<Texture::DataFormat::Stencil>()
 	{
 		return 1;
 	}

@@ -22,6 +22,7 @@
 #include "Color.h"
 #include "Render/Buffer.h"
 #include "Render/Renderer.h"
+#include "Render/RenderTarget.h"
 #include "Render/Shader.h"
 #include "Render/ShaderAttrib.h"
 #include "Render/ShaderInput.h"
@@ -47,12 +48,22 @@ namespace Uie
 		//TODO : Remove below.
 		bool bFocused;
 		Color sColor;
+
+		Render::Texture sTexture;
+
+		Render::RenderTarget sOffscreen;
+		Render::Buffer<float> sBlurVertexBuffer;
+		Render::Buffer<float> sBlurUVBuffer;
+		Render::ShaderInput sBlurShaderInput;
+		Render::Shader sBlurShader;
+
+		Render::Texture sBlurredTexture;
+
 		Render::Buffer<float> sVertexBuffer;
 		Render::Buffer<float> sUVBuffer;
 		Render::Buffer<float> sColorBuffer;
-		Render::Shader sShader;
-		Render::ShaderInput sShaderInput;
-		Render::Texture sTexture;
+		Render::ShaderInput sNormalShaderInput;
+		Render::Shader sNormalShader;
 
 	public:
 		UIElement(UIPlacement *pPlacement, const std::wstring &sName);

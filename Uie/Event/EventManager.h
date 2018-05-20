@@ -22,9 +22,6 @@
 #include <Windows.h>
 #include <windowsx.h>
 
-//TODO : Remove below.
-#include "../RenderManager.h"
-
 namespace Uie::Event
 {
 	class UIE_DLL EventManager final : public ManagerBase<EventManager>, public WindowMessageHandler

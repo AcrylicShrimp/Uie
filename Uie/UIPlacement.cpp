@@ -59,9 +59,9 @@ namespace Uie
 		this->sElementOrderMap[nOrder].emplace_back(pElement);
 	}
 
-	void UIPlacement::iterateAll(IterateOrder eIterateOrder, std::function<bool(UIElement *)> fIterateFunc)
+	void UIPlacement::iterateAll(IterationOrder eIterateOrder, std::function<bool(UIElement *)> fIterateFunc)
 	{
-		if (eIterateOrder == IterateOrder::FrontToBack)
+		if (eIterateOrder == IterationOrder::FrontToBack)
 		{
 			for (auto iMapIndex{this->sElementOrderMap.rbegin()}, iMapEnd{this->sElementOrderMap.rend()}; iMapIndex != iMapEnd; ++iMapIndex)
 				for (auto iIndex{iMapIndex->second.rbegin()}, iEnd{iMapIndex->second.rend()}; iIndex != iEnd; ++iIndex)

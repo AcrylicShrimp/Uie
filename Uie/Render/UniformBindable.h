@@ -8,11 +8,13 @@
 
 #define _CLASS_UIE_RENDER_UNIFORMBINDABLE_H
 
+#include "../UieDLL.h"
+
 #include <GL/glew.h>
 
 namespace Uie::Render
 {
-	class UniformBindable
+	class UIE_DLL UniformBindable
 	{
 	protected:
 		mutable bool bNeedBind{true};

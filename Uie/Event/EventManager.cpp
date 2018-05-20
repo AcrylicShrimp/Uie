@@ -42,7 +42,7 @@ namespace Uie::Event
 	{
 		if (nMessage == WM_UIE_LINK_PLACEMENT)
 		{
-			this->sWindowStateMap.emplace(pWindow, State{false, nullptr});
+			this->sWindowStateMap.emplace(pWindow, State{false, nullptr, nullptr});
 			return 0;
 		}
 		else if (nMessage == WM_UIE_UNLINK_PLACEMENT)
@@ -79,8 +79,8 @@ namespace Uie::Event
 				TrackMouseEvent(&sTrackMouseEvent);
 			}
 
-			auto nX{GET_X_LPARAM(lParam) / static_cast<float>(pWindow->windowInfo().nClientWidth)};
-			auto nY{GET_Y_LPARAM(lParam) / static_cast<float>(pWindow->windowInfo().nClientHeight)};
+			auto nX{GET_X_LPARAM(lParam) / static_cast<float>(pWindow->sizeInfo().nClientWidth)};
+			auto nY{GET_Y_LPARAM(lParam) / static_cast<float>(pWindow->sizeInfo().nClientHeight)};
 
 			nX = nX * 2.f - 1.f;
 			nY = nY * 2.f - 1.f;
@@ -205,8 +205,8 @@ namespace Uie::Event
 		case WM_RBUTTONDOWN:
 		case WM_XBUTTONDOWN:
 		{
-			auto nX{GET_X_LPARAM(lParam) / static_cast<float>(pWindow->windowInfo().nClientWidth)};
-			auto nY{GET_Y_LPARAM(lParam) / static_cast<float>(pWindow->windowInfo().nClientHeight)};
+			auto nX{GET_X_LPARAM(lParam) / static_cast<float>(pWindow->sizeInfo().nClientWidth)};
+			auto nY{GET_Y_LPARAM(lParam) / static_cast<float>(pWindow->sizeInfo().nClientHeight)};
 
 			nX = nX * 2.f - 1.f;
 			nY = nY * 2.f - 1.f;
@@ -239,8 +239,8 @@ namespace Uie::Event
 		case WM_RBUTTONUP:
 		case WM_XBUTTONUP:
 		{
-			auto nX{GET_X_LPARAM(lParam) / static_cast<float>(pWindow->windowInfo().nClientWidth)};
-			auto nY{GET_Y_LPARAM(lParam) / static_cast<float>(pWindow->windowInfo().nClientHeight)};
+			auto nX{GET_X_LPARAM(lParam) / static_cast<float>(pWindow->sizeInfo().nClientWidth)};
+			auto nY{GET_Y_LPARAM(lParam) / static_cast<float>(pWindow->sizeInfo().nClientHeight)};
 
 			nX = nX * 2.f - 1.f;
 			nY = nY * 2.f - 1.f;
@@ -264,9 +264,6 @@ namespace Uie::Event
 			return Window::NoHandler;
 		}
 
-		//TODO : Remove below.
-		RenderManager::instance().repaint(pWindow);
-
 		return 0;
 	}
 
@@ -274,7 +271,7 @@ namespace Uie::Event
 	{
 		UIElement *pResult{nullptr};
 
-		pPlacement->iterateAll(UIPlacement::IterateOrder::FrontToBack, [nX, nY, &pResult](UIElement *pElement)
+		pPlacement->iterateAll(UIPlacement::IterationOrder::FrontToBack, [nX, nY, &pResult](UIElement *pElement)
 		{
 			if (!pElement->rect().contains(nX, nY))
 				return false;

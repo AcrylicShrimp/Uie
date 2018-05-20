@@ -9,7 +9,7 @@
 namespace Uie
 {
 	RenderManager::RenderManager() :
-		WindowMessageHandler({WM_UIE_CONTEXT_CREAT, WM_UIE_CONTEXT_DESTROY, WM_UIE_OPENGL_CONTEXT_CREAT, WM_UIE_LINK_CONTEXT, WM_ERASEBKGND, WM_PAINT}),
+		WindowMessageHandler({WM_UIE_CONTEXT_CREATE, WM_UIE_CONTEXT_DESTROY, WM_UIE_OPENGL_CONTEXT_CREATE, WM_UIE_LINK_CONTEXT, WM_ERASEBKGND, WM_PAINT}),
 		bInitialized{false}
 	{
 		Window::registerGlobalHandler(this);
@@ -25,6 +25,11 @@ namespace Uie
 		this->sRenderPropertiesMap[pWindow] = sRenderProperties;
 	}
 
+	void RenderManager::repaint()
+	{
+		RedrawWindow(Render::Context::obtainContext()->window()->windowHandle(), nullptr, nullptr, RDW_INVALIDATE);
+	}
+
 	void RenderManager::repaint(Window *pWindow)
 	{
 		RedrawWindow(pWindow->windowHandle(), nullptr, nullptr, RDW_INVALIDATE);
@@ -34,7 +39,7 @@ namespace Uie
 	{
 		switch (nMessage)
 		{
-		case WM_UIE_CONTEXT_CREAT:
+		case WM_UIE_CONTEXT_CREATE:
 		{
 			this->sRenderPropertiesMap.emplace(pWindow, RenderProperties{});
 		}
@@ -44,7 +49,7 @@ namespace Uie
 			this->sRenderPropertiesMap.erase(pWindow);
 		}
 		break;
-		case WM_UIE_OPENGL_CONTEXT_CREAT:
+		case WM_UIE_OPENGL_CONTEXT_CREATE:
 		{
 			this->bInitialized = false;
 		}
@@ -83,7 +88,7 @@ namespace Uie
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
 
-		glViewport(0, 0, pWindow->windowInfo().nClientWidth, pWindow->windowInfo().nClientHeight);
+		glViewport(0, 0, pWindow->sizeInfo().nClientWidth, pWindow->sizeInfo().nClientHeight);
 
 		const auto &sRenderProperties{iRenderPropertiesIndex->second};
 		glClearColor(
@@ -103,6 +108,6 @@ namespace Uie
 			pPlacement->renderAll();
 		}
 
-		SwapBuffers(pWindow->windowInfo().hDeviceContext);
+		SwapBuffers(Render::Context::obtainContext()->deviceContext());
 	}
 }
