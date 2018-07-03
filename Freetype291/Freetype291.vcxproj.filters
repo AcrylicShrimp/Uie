@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="FT_MODULES">
+      <UniqueIdentifier>{db41aa5b-149d-46c4-9a7f-a028465f66f7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="autofit\autofit.c" />
+    <ClCompile Include="bdf\bdf.c" />
+    <ClCompile Include="cff\cff.c" />
+    <ClCompile Include="base\ftbase.c" />
+    <ClCompile Include="cache\ftcache.c" />
+    <ClCompile Include="base\ftdebug.c" />
+    <ClCompile Include="gzip\ftgzip.c" />
+    <ClCompile Include="base\ftinit.c" />
+    <ClCompile Include="lzw\ftlzw.c" />
+    <ClCompile Include="base\ftsystem.c" />
+    <ClCompile Include="pcf\pcf.c" />
+    <ClCompile Include="pfr\pfr.c" />
+    <ClCompile Include="psaux\psaux.c" />
+    <ClCompile Include="pshinter\pshinter.c" />
+    <ClCompile Include="psnames\psmodule.c" />
+    <ClCompile Include="raster\raster.c" />
+    <ClCompile Include="sfnt\sfnt.c" />
+    <ClCompile Include="smooth\smooth.c" />
+    <ClCompile Include="truetype\truetype.c" />
+    <ClCompile Include="type1\type1.c" />
+    <ClCompile Include="type42\type42.c" />
+    <ClCompile Include="cid\type1cid.c" />
+    <ClCompile Include="winfonts\winfnt.c" />
+    <ClCompile Include="base\ftbbox.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftbdf.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftbitmap.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftcid.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftfstype.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftgasp.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftglyph.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftgxval.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftmm.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftotval.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftpatent.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftpfr.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftstroke.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftsynth.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\fttype1.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+    <ClCompile Include="base\ftwinfnt.c">
+      <Filter>FT_MODULES</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="base\ftver.rc" />
+  </ItemGroup>
+</Project>
