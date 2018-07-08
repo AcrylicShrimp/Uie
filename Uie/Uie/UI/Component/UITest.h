@@ -4,23 +4,24 @@
 	Created by AcrylicShrimp.
 */
 
-#ifndef _CLASS_UIE_COMPONENT_UITEST_H
+#ifndef _CLASS_UIE_UI_COMPONENT_UITEST_H
 
-#define _CLASS_UIE_COMPONENT_UITEST_H
+#define _CLASS_UIE_UI_COMPONENT_UITEST_H
 
-#include "../UieDLL.h"
+#include "../../UieDLL.h"
 
-#include "../Color.h"
-#include "../RenderManager.h"
-#include "../UIElement.h"
+#include "../Element.h"
+#include "../Root.h"
+#include "../../Color.h"
+#include "../../UIContext.h"
 
-#include "../Render/Component/Buffer.h"
-#include "../Render/Component/RenderTarget.h"
-#include "../Render/Component/Shader.h"
-#include "../Render/Component/ShaderAttrib.h"
-#include "../Render/Component/ShaderInput.h"
-#include "../Render/Component/SubShader.h"
-#include "../Render/Component/Texture.h"
+#include "../../Render/Component/Buffer.h"
+#include "../../Render/Component/RenderTarget.h"
+#include "../../Render/Component/Shader.h"
+#include "../../Render/Component/ShaderAttrib.h"
+#include "../../Render/Component/ShaderInput.h"
+#include "../../Render/Component/SubShader.h"
+#include "../../Render/Component/Texture.h"
 
 #include <cstdint>
 #include <fstream>
@@ -28,9 +29,9 @@
 #include <Gl/glew.h>
 #include <Windows.h>
 
-namespace Uie::Component
+namespace Uie::UI::Component
 {
-	class UIE_DLL UITest : public UIElement
+	class UIE_DLL UITest : public Element
 	{
 	protected:
 		static Render::Component::Shader *pShader;
@@ -47,7 +48,7 @@ namespace Uie::Component
 		Render::Component::Buffer<float> sColorBuffer;
 		
 	public:
-		UITest(UIPlacement *pPlacement, const std::wstring &sName);
+		UITest(Root *pRoot, const std::string &sName);
 		UITest(const UITest &sSrc) = delete;
 		~UITest();
 		

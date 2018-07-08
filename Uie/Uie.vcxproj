@@ -132,18 +132,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Uie\Color.cpp" />
-    <ClCompile Include="Uie\Component\UICanvasLayout.cpp" />
-    <ClCompile Include="Uie\Component\UIGridLayout.cpp" />
-    <ClCompile Include="Uie\Component\UITest.cpp" />
-    <ClCompile Include="Uie\Event\EventManager.cpp" />
+    <ClCompile Include="Uie\Event\EventEmitter.cpp" />
+    <ClCompile Include="Uie\Event\EventHandler.cpp" />
+    <ClCompile Include="Uie\Event\EventManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Uie\Event\RaycastTarget.cpp" />
     <ClCompile Include="Uie\Event\UIInputEvent.cpp" />
     <ClCompile Include="Uie\Event\UIKeyboardEvent.cpp" />
     <ClCompile Include="Uie\Event\UIMouseButtonEvent.cpp" />
     <ClCompile Include="Uie\Event\UIMouseEvent.cpp" />
     <ClCompile Include="Uie\Event\UITypeEvent.cpp" />
-    <ClCompile Include="Uie\Main.cpp" />
     <ClCompile Include="Uie\Rect.cpp" />
-    <ClCompile Include="Uie\RenderManager.cpp" />
     <ClCompile Include="Uie\Render\Component\Buffer.cpp" />
     <ClCompile Include="Uie\Render\Component\ColorRenderBuffer.cpp" />
     <ClCompile Include="Uie\Render\Component\DepthRenderBuffer.cpp" />
@@ -157,24 +160,30 @@
     <ClCompile Include="Uie\Render\Component\StencilRenderBuffer.cpp" />
     <ClCompile Include="Uie\Render\Component\SubShader.cpp" />
     <ClCompile Include="Uie\Render\Component\Texture.cpp" />
-    <ClCompile Include="Uie\Render\RenderingContext.cpp" />
-    <ClCompile Include="Uie\Render\RenderingContextObject.cpp" />
-    <ClCompile Include="Uie\UIElement.cpp" />
-    <ClCompile Include="Uie\UIEventHandler.cpp" />
-    <ClCompile Include="Uie\UIManager.cpp" />
-    <ClCompile Include="Uie\UIPlacement.cpp" />
+    <ClCompile Include="Uie\Render\Renderer.cpp" />
+    <ClCompile Include="Uie\Render\ShaderContainer.cpp" />
+    <ClCompile Include="Uie\UIContext.cpp" />
+    <ClCompile Include="Uie\UI\Component\UICanvasLayout.cpp" />
+    <ClCompile Include="Uie\UI\Component\UIGridLayout.cpp" />
+    <ClCompile Include="Uie\UI\Component\UITest.cpp" />
+    <ClCompile Include="Uie\UI\Hierarchy.cpp" />
+    <ClCompile Include="Uie\UI\Placement.cpp" />
+    <ClCompile Include="Uie\UI\Element.cpp" />
+    <ClCompile Include="Uie\UI\Root.cpp" />
     <ClCompile Include="Uie\Window.cpp" />
-    <ClCompile Include="Uie\WindowManager.cpp" />
     <ClCompile Include="Uie\WindowMessageHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Uie\Color.h" />
-    <ClInclude Include="Uie\Component\UICanvasLayout.h" />
-    <ClInclude Include="Uie\Component\UIGridLayout.h" />
-    <ClInclude Include="Uie\Component\UILayout.h" />
-    <ClInclude Include="Uie\Component\UILayout.hpp" />
-    <ClInclude Include="Uie\Component\UITest.h" />
-    <ClInclude Include="Uie\Event\EventManager.h" />
+    <ClInclude Include="Uie\Event\EventEmitter.h" />
+    <ClInclude Include="Uie\Event\EventHandler.h" />
+    <ClInclude Include="Uie\Event\EventManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Uie\Event\RaycastTarget.h" />
     <ClInclude Include="Uie\Event\UIEvents.h" />
     <ClInclude Include="Uie\Event\UIInputEvent.h" />
     <ClInclude Include="Uie\Event\UIKeyboardEvent.h" />
@@ -184,7 +193,6 @@
     <ClInclude Include="Uie\ManagerBase.h" />
     <ClInclude Include="Uie\ManagerBase.hpp" />
     <ClInclude Include="Uie\Rect.h" />
-    <ClInclude Include="Uie\RenderManager.h" />
     <ClInclude Include="Uie\Render\Component\Buffer.h" />
     <ClInclude Include="Uie\Render\Component\Buffer.hpp" />
     <ClInclude Include="Uie\Render\Component\ColorRenderBuffer.h" />
@@ -202,15 +210,21 @@
     <ClInclude Include="Uie\Render\Component\SubShader.h" />
     <ClInclude Include="Uie\Render\Component\Texture.h" />
     <ClInclude Include="Uie\Render\Component\UniformBindable.h" />
-    <ClInclude Include="Uie\Render\RenderingContext.h" />
-    <ClInclude Include="Uie\Render\RenderingContextObject.h" />
+    <ClInclude Include="Uie\Render\Renderable.h" />
+    <ClInclude Include="Uie\Render\Renderer.h" />
+    <ClInclude Include="Uie\Render\ShaderContainer.h" />
+    <ClInclude Include="Uie\UIContext.h" />
     <ClInclude Include="Uie\UieDLL.h" />
-    <ClInclude Include="Uie\UIElement.h" />
-    <ClInclude Include="Uie\UIEventHandler.h" />
-    <ClInclude Include="Uie\UIManager.h" />
-    <ClInclude Include="Uie\UIPlacement.h" />
+    <ClInclude Include="Uie\UI\Component\UICanvasLayout.h" />
+    <ClInclude Include="Uie\UI\Component\UIGridLayout.h" />
+    <ClInclude Include="Uie\UI\Component\UITest.h" />
+    <ClInclude Include="Uie\UI\Hierarchy.h" />
+    <ClInclude Include="Uie\UI\Layout.h" />
+    <ClInclude Include="Uie\UI\Layout.hpp" />
+    <ClInclude Include="Uie\UI\Placement.h" />
+    <ClInclude Include="Uie\UI\Element.h" />
+    <ClInclude Include="Uie\UI\Root.h" />
     <ClInclude Include="Uie\Window.h" />
-    <ClInclude Include="Uie\WindowManager.h" />
     <ClInclude Include="Uie\WindowMessageHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

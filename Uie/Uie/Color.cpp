@@ -8,6 +8,15 @@
 
 namespace Uie
 {
+	const Color Color::Black{.0f, .0f, .0f};
+	const Color Color::White{1.f, 1.f, 1.f};
+	const Color Color::Red{1.f, .0f, .0f};
+	const Color Color::Green{.0f, 1.f, .0f};
+	const Color Color::Blue{.0f, .0f, 1.f};
+	const Color Color::Cyan{.0f, 1.f, 1.f};
+	const Color Color::Magenta{1.f, .0f, 1.f};
+	const Color Color::Yellow{1.f, 1.f, .0f};
+
 	Color::Color() :
 		nR{.0f},
 		nG{.0f},

@@ -10,7 +10,7 @@
 
 #include "../../UieDLL.h"
 
-#include "../RenderingContext.h"
+#include "../../UIContext.h"
 #include "Renderable.h"
 
 #include <cstdint>

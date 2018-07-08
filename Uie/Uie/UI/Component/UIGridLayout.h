@@ -4,17 +4,18 @@
 	Created by AcrylicShrimp.
 */
 
-#ifndef _CLASS_UIE_COMPONENT_UIGRIDLAYOUT_H
+#ifndef _CLASS_UIE_UI_COMPONENT_UIGRIDLAYOUT_H
 
-#define _CLASS_UIE_COMPONENT_UIGRIDLAYOUT_H
+#define _CLASS_UIE_UI_COMPONENT_UIGRIDLAYOUT_H
 
-#include "../UieDLL.h"
+#include "../../UieDLL.h"
 
-#include "UILayout.h"
+#include "../Layout.h"
+#include "../Root.h"
 
 #include <string>
 
-namespace Uie::Component
+namespace Uie::UI::Component
 {
 	struct UIE_DLL GridLayoutProperties
 	{
@@ -22,7 +23,7 @@ namespace Uie::Component
 		std::uint32_t nVerticalPosition;
 	};
 
-	class UIE_DLL UIGridLayout : public UILayout<GridLayoutProperties>
+	class UIE_DLL UIGridLayout : public Layout<GridLayoutProperties>
 	{
 	protected:
 		float nMargin;
@@ -31,7 +32,7 @@ namespace Uie::Component
 		std::uint32_t nColumn;
 
 	public:
-		UIGridLayout(UIPlacement *pPlacement, const std::wstring &sName, float nMargin, float nPadding, std::uint32_t nRow, std::uint32_t nColumn);
+		UIGridLayout(Root *pRoot, const std::string &sName, float nMargin, float nPadding, std::uint32_t nRow, std::uint32_t nColumn);
 		UIGridLayout(const UIGridLayout &sSrc) = delete;
 		~UIGridLayout() = default;
 		
@@ -43,7 +44,7 @@ namespace Uie::Component
 		UIGridLayout &operator=(const UIGridLayout &sSrc) = delete;
 		
 	public:
-		virtual void updateChild(UIElement *pChild, GridLayoutProperties &tLayoutProperties) override;
+		virtual void updateChild(Element *pChild, GridLayoutProperties &tLayoutProperties) override;
 	};
 
 	inline float UIGridLayout::margin() const

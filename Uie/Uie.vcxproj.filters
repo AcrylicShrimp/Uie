@@ -4,9 +4,6 @@
     <Filter Include="Uie">
       <UniqueIdentifier>{7e59ed56-33f3-488e-9c05-1f6890630f93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Uie\Component">
-      <UniqueIdentifier>{7f2d90e0-a7e5-4bfb-bb7b-e543d5c837de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Uie\Event">
       <UniqueIdentifier>{ad6d328b-766c-4dc1-9bcb-b696f08bdd74}</UniqueIdentifier>
     </Filter>
@@ -16,6 +13,12 @@
     <Filter Include="Uie\Render\Component">
       <UniqueIdentifier>{cbc2ee57-faa1-4076-a5b4-524deab1c569}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Uie\UI">
+      <UniqueIdentifier>{f942d0bc-1af0-471a-88e2-a6d7488ccddc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Uie\UI\Component">
+      <UniqueIdentifier>{60669a5c-c990-4680-9d3d-140c30851b85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Uie\Window.cpp">
@@ -24,31 +27,10 @@
     <ClCompile Include="Uie\WindowMessageHandler.cpp">
       <Filter>Uie</Filter>
     </ClCompile>
-    <ClCompile Include="Uie\Main.cpp">
-      <Filter>Uie</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\WindowManager.cpp">
-      <Filter>Uie</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\RenderManager.cpp">
-      <Filter>Uie</Filter>
-    </ClCompile>
     <ClCompile Include="Uie\Color.cpp">
       <Filter>Uie</Filter>
     </ClCompile>
-    <ClCompile Include="Uie\UIElement.cpp">
-      <Filter>Uie</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\Component\UICanvasLayout.cpp">
-      <Filter>Uie\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Uie\Rect.cpp">
-      <Filter>Uie</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\UIManager.cpp">
-      <Filter>Uie</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\UIPlacement.cpp">
       <Filter>Uie</Filter>
     </ClCompile>
     <ClCompile Include="Uie\Event\UIMouseEvent.cpp">
@@ -56,9 +38,6 @@
     </ClCompile>
     <ClCompile Include="Uie\Event\EventManager.cpp">
       <Filter>Uie\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\UIEventHandler.cpp">
-      <Filter>Uie</Filter>
     </ClCompile>
     <ClCompile Include="Uie\Event\UIInputEvent.cpp">
       <Filter>Uie\Event</Filter>
@@ -71,18 +50,6 @@
     </ClCompile>
     <ClCompile Include="Uie\Event\UITypeEvent.cpp">
       <Filter>Uie\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\Component\UITest.cpp">
-      <Filter>Uie\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\Component\UIGridLayout.cpp">
-      <Filter>Uie\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\Render\RenderingContext.cpp">
-      <Filter>Uie\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Uie\Render\RenderingContextObject.cpp">
-      <Filter>Uie\Render</Filter>
     </ClCompile>
     <ClCompile Include="Uie\Render\Component\Buffer.cpp">
       <Filter>Uie\Render\Component</Filter>
@@ -123,6 +90,45 @@
     <ClCompile Include="Uie\Render\Component\Texture.cpp">
       <Filter>Uie\Render\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Uie\Render\Renderer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Render\ShaderContainer.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UIContext.cpp">
+      <Filter>Uie</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UI\Placement.cpp">
+      <Filter>Uie\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UI\Element.cpp">
+      <Filter>Uie\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Event\EventHandler.cpp">
+      <Filter>Uie\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UI\Root.cpp">
+      <Filter>Uie\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Event\RaycastTarget.cpp">
+      <Filter>Uie\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UI\Hierarchy.cpp">
+      <Filter>Uie\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\Event\EventEmitter.cpp">
+      <Filter>Uie\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UI\Component\UICanvasLayout.cpp">
+      <Filter>Uie\UI\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UI\Component\UIGridLayout.cpp">
+      <Filter>Uie\UI\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Uie\UI\Component\UITest.cpp">
+      <Filter>Uie\UI\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Uie\Window.h">
@@ -140,34 +146,10 @@
     <ClInclude Include="Uie\ManagerBase.hpp">
       <Filter>Uie</Filter>
     </ClInclude>
-    <ClInclude Include="Uie\WindowManager.h">
-      <Filter>Uie</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\RenderManager.h">
-      <Filter>Uie</Filter>
-    </ClInclude>
     <ClInclude Include="Uie\Color.h">
       <Filter>Uie</Filter>
     </ClInclude>
-    <ClInclude Include="Uie\UIElement.h">
-      <Filter>Uie</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\Component\UILayout.h">
-      <Filter>Uie\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\Component\UILayout.hpp">
-      <Filter>Uie\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\Component\UICanvasLayout.h">
-      <Filter>Uie\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Uie\Rect.h">
-      <Filter>Uie</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\UIManager.h">
-      <Filter>Uie</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\UIPlacement.h">
       <Filter>Uie</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Event\UIMouseEvent.h">
@@ -178,9 +160,6 @@
     </ClInclude>
     <ClInclude Include="Uie\Event\EventManager.h">
       <Filter>Uie\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\UIEventHandler.h">
-      <Filter>Uie</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Event\UIInputEvent.h">
       <Filter>Uie\Event</Filter>
@@ -193,18 +172,6 @@
     </ClInclude>
     <ClInclude Include="Uie\Event\UITypeEvent.h">
       <Filter>Uie\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\Component\UITest.h">
-      <Filter>Uie\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\Component\UIGridLayout.h">
-      <Filter>Uie\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\Render\RenderingContext.h">
-      <Filter>Uie\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Uie\Render\RenderingContextObject.h">
-      <Filter>Uie\Render</Filter>
     </ClInclude>
     <ClInclude Include="Uie\Render\Component\Buffer.h">
       <Filter>Uie\Render\Component</Filter>
@@ -256,6 +223,54 @@
     </ClInclude>
     <ClInclude Include="Uie\Render\Component\UniformBindable.h">
       <Filter>Uie\Render\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Renderer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\ShaderContainer.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UIContext.h">
+      <Filter>Uie</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Placement.h">
+      <Filter>Uie\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Element.h">
+      <Filter>Uie\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Event\EventHandler.h">
+      <Filter>Uie\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Layout.h">
+      <Filter>Uie\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Layout.hpp">
+      <Filter>Uie\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Root.h">
+      <Filter>Uie\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Event\RaycastTarget.h">
+      <Filter>Uie\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\Renderable.h">
+      <Filter>Uie\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Hierarchy.h">
+      <Filter>Uie\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Event\EventEmitter.h">
+      <Filter>Uie\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Component\UICanvasLayout.h">
+      <Filter>Uie\UI\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Component\UIGridLayout.h">
+      <Filter>Uie\UI\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\UI\Component\UITest.h">
+      <Filter>Uie\UI\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

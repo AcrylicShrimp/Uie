@@ -18,6 +18,9 @@ namespace Uie
 
 	void Window::destroy()
 	{
+		if (!this->created())
+			return;
+
 		this->destroyContext();
 
 		auto hWindowHandle{this->hHandle};
@@ -32,10 +35,12 @@ namespace Uie
 			Window::sWindowMap.erase(hWindowHandle);
 	}
 
-	bool Window::create(const Attribute &sAttribute)
+	bool Window::create(Attribute &sAttribute)
 	{
 		if (this->created())
 			return false;
+
+		sAttribute.eStyle = static_cast<Style>(static_cast<DWORD>(sAttribute.eStyle) & ~static_cast<DWORD>(Style::Child));
 
 		WNDCLASSW sClass
 		{
@@ -82,7 +87,7 @@ namespace Uie
 			sAttribute.nY,
 			sClientRect.right,
 			sClientRect.bottom,
-			sAttribute.hParentWindow,
+			nullptr,
 			sAttribute.hMenu,
 			this->hInstance,
 			sAttribute.pExtraPointer)))
@@ -96,9 +101,85 @@ namespace Uie
 		return true;
 	}
 
+	bool Window::create(Window *pParent, Attribute &sAttribute)
+	{
+		if (!pParent)
+			return false;
+
+		if (this->created())
+			return false;
+
+		sAttribute.eStyle = static_cast<Style>(static_cast<DWORD>(sAttribute.eStyle) & ~static_cast<DWORD>(Style::Popup));
+		sAttribute.eStyle = combineEnum(sAttribute.eStyle, Style::Child);
+
+		WNDCLASSW sClass
+		{
+			static_cast<UINT>(sAttribute.eClassStyle),
+			Window::windowMessageProcedure,
+			0,
+			0,
+			this->hInstance = ::GetModuleHandleW(nullptr),
+			sAttribute.hIcon,
+			sAttribute.hCursor,
+			sAttribute.hBackgroundBrush,
+			sAttribute.pMenuName,
+			(this->sClassName = sAttribute.sClassName).c_str()
+		};
+
+		if (!::RegisterClassW(&sClass))
+		{
+			this->destroy();
+			return false;
+		}
+
+		RECT sClientRect
+		{
+			0,
+			0,
+			static_cast<LONG>(sAttribute.nWidth),
+			static_cast<LONG>(sAttribute.nHeight)
+		};
+
+		if (sAttribute.eSizingMode == SizingMode::ClientAreaOnly)
+		{
+			::AdjustWindowRectEx(&sClientRect, static_cast<DWORD>(sAttribute.eStyle), sAttribute.pMenuName != nullptr, static_cast<DWORD>(sAttribute.eExtendedStyle));
+
+			sClientRect.right -= sClientRect.left;
+			sClientRect.bottom -= sClientRect.top;
+		}
+
+		if (!(this->hHandle = ::CreateWindowExW(
+			static_cast<DWORD>(sAttribute.eExtendedStyle),
+			sAttribute.sClassName.c_str(),
+			sAttribute.sTitleText.c_str(),
+			static_cast<DWORD>(sAttribute.eStyle),
+			sAttribute.nX,
+			sAttribute.nY,
+			sClientRect.right,
+			sClientRect.bottom,
+			pParent->hHandle,
+			sAttribute.hMenu,
+			this->hInstance,
+			sAttribute.pExtraPointer)))
+		{
+			this->destroy();
+			return false;
+		}
+
+		Window::sWindowMap.emplace(this->hHandle, this);
+
+		if (!::SetParent(this->hHandle, pParent->hHandle))
+		{
+			this->destroy();
+			return false;
+		}
+
+		return true;
+	}
+
 	void Window::destroyContext()
 	{
-		if (!this->hContext)
+		if (!this->contextCreated())
 			return;
 
 		::ReleaseDC(this->hHandle, this->hContext);
@@ -148,6 +229,49 @@ namespace Uie
 			this->destroyContext();
 			return false;
 		}
+		
+		return true;
+	}
+
+	bool Window::setParent(Window *pParent)
+	{
+		auto eStyle{this->style()};
+		bool bResult;
+
+		if (pParent)
+		{
+			eStyle = static_cast<Style>(static_cast<DWORD>(eStyle) & ~static_cast<DWORD>(Style::Popup));
+			eStyle = combineEnum(eStyle, Style::Child);
+
+			bResult = ::SetParent(this->hHandle, pParent->hHandle) != nullptr;
+		}
+		else
+		{
+			eStyle = static_cast<Style>(static_cast<DWORD>(eStyle) & ~static_cast<DWORD>(Style::Child));
+
+			bResult = ::SetParent(this->hHandle, nullptr) != nullptr;
+		}
+
+		if (bResult)
+			bResult = bResult && ::SetWindowLongPtrW(this->hHandle, GWL_STYLE, static_cast<LONG_PTR>(eStyle));
+
+		return bResult;
+	}
+
+	bool Window::setStyle(Style eStyle)
+	{
+		::SetLastError(0);
+		::SetWindowLongPtrW(this->hHandle, GWL_STYLE, static_cast<LONG_PTR>(eStyle));
+
+		return ::GetLastError() == 0;
+	}
+
+	bool Window::setExtendedStyle(ExtendedStyle eExtendedStyle)
+	{
+		::SetLastError(0);
+		::SetWindowLongPtrW(this->hHandle, GWL_EXSTYLE, static_cast<LONG_PTR>(eExtendedStyle));
+
+		return ::GetLastError() == 0;
 	}
 
 	bool Window::setVisible(Visibility eNewVisibility)
@@ -163,6 +287,11 @@ namespace Uie
 	bool Window::setTitle(const std::wstring &sNewTitle)
 	{
 		return ::SetWindowTextW(this->hHandle, sNewTitle.c_str());
+	}
+
+	void Window::setCloseEventHandler(std::function<void(Window *)> fCloseEventHandler)
+	{
+		this->fCloseEventHandler = fCloseEventHandler;
 	}
 
 	bool Window::moveWindow(int nNewX, int nNewY, int nNewWidth, int nNewHeight, bool bRepaint)
@@ -196,32 +325,6 @@ namespace Uie
 		this->sHandlerListMap.clear();
 	}
 
-	bool Window::peekMessage()
-	{
-		MSG sMsg;
-
-		if (!::PeekMessageW(&sMsg, nullptr, 0, 0, PM_REMOVE))
-			return false;
-
-		::TranslateMessage(&sMsg);
-		::DispatchMessageW(&sMsg);
-
-		return true;
-	}
-
-	WPARAM Window::loopMessage()
-	{
-		MSG sMsg;
-
-		while (::GetMessageW(&sMsg, nullptr, 0, 0))
-		{
-			::TranslateMessage(&sMsg);
-			::DispatchMessageW(&sMsg);
-		}
-
-		return sMsg.wParam;
-	}
-
 	LRESULT Window::handleMessage(HWND hWindow, UINT nMessage, WPARAM wParam, LPARAM lParam)
 	{
 		LRESULT nResult;
@@ -246,6 +349,20 @@ namespace Uie
 
 			this->sSizeInfo.nClientWidth = sClientRect.right - sClientRect.left;
 			this->sSizeInfo.nClientHeight = sClientRect.bottom - sClientRect.top;
+
+			nResult = 0;
+		}
+		break;
+		case WM_CLOSE:
+		{
+			this->fCloseEventHandler(this);
+
+			nResult = 0;
+		}
+		break;
+		case WM_DESTROY:
+		{
+			::PostQuitMessage(0);
 
 			nResult = 0;
 		}
@@ -304,6 +421,40 @@ namespace Uie
 	void Window::unregisterGlobalHandlerAll()
 	{
 		Window::sGlobalHandlerListMap.clear();
+	}
+
+	bool Window::peekMessage()
+	{
+		MSG sMsg;
+
+		if (!::PeekMessageW(&sMsg, nullptr, 0, 0, PM_REMOVE))
+			return false;
+
+		if (sMsg.message == WM_QUIT)
+			return false;
+
+		::TranslateMessage(&sMsg);
+		::DispatchMessageW(&sMsg);
+
+		return true;
+	}
+
+	WPARAM Window::loopMessage()
+	{
+		MSG sMsg;
+
+		while (::GetMessageW(&sMsg, nullptr, 0, 0))
+		{
+			::TranslateMessage(&sMsg);
+			::DispatchMessageW(&sMsg);
+		}
+
+		return sMsg.wParam;
+	}
+
+	void Window::defaultCloseEventHandler(Window *pWindow)
+	{
+		pWindow->destroy();
 	}
 
 	LRESULT CALLBACK Window::windowMessageProcedure(HWND hWindow, UINT nMessage, WPARAM wParam, LPARAM lParam)

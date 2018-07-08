@@ -8,57 +8,57 @@
 
 #include "UITest.h"
 
-namespace Uie::Component
+namespace Uie::UI::Component
 {
 	Render::Component::Shader *UITest::pShader{nullptr};
 	Render::Component::Texture *UITest::pTexture{nullptr};
 	std::uint64_t UITest::nReferenceCount{0};
 
-	UITest::UITest(UIPlacement *pPlacement, const std::wstring &sName) :
-		UIElement(pPlacement, sName)
+	UITest::UITest(Root *pRoot, const std::string &sName) :
+		Element(pRoot, sName)
 	{
 		this->bFocused = false;
 		this->sRenderingColor = Color(.5f, .5f, .5f, .75f);
 
-		this->UIEventHandler::addHandler("mouse.enter", [this](const std::string &sIdentifier, void *pParam)
+		this->EventHandler::addHandler("mouse.enter", [this](const std::string &sIdentifier, void *pParam)
 		{
 			this->sRenderingColor = Color(1.f, .5f, .5f, .75f);
-			RenderManager::instance().repaint();
+			UIContext::current()->redraw();
 			return true;
 		});
 
-		this->UIEventHandler::addHandler("mouse.leave", [this](const std::string &sIdentifier, void *pParam)
+		this->EventHandler::addHandler("mouse.leave", [this](const std::string &sIdentifier, void *pParam)
 		{
 			this->sRenderingColor = Color(.5f, .5f, .5f, .75f);
-			RenderManager::instance().repaint();
+			UIContext::current()->redraw();
 			return true;
 		});
 
-		this->UIEventHandler::addHandler("keyboard.down", [this](const std::string &sIdentifier, void *pParam)
+		this->EventHandler::addHandler("keyboard.down", [this](const std::string &sIdentifier, void *pParam)
 		{
 			this->sRenderingColor = Color(1.f, .5f, .5f, .75f);
-			RenderManager::instance().repaint();
+			UIContext::current()->redraw();
 			return true;
 		});
 
-		this->UIEventHandler::addHandler("keyboard.up", [this](const std::string &sIdentifier, void *pParam)
+		this->EventHandler::addHandler("keyboard.up", [this](const std::string &sIdentifier, void *pParam)
 		{
 			this->sRenderingColor = Color(.5f, .5f, .5f, .75f);
-			RenderManager::instance().repaint();
+			UIContext::current()->redraw();
 			return true;
 		});
 
-		this->UIEventHandler::addHandler("focus.enter", [this](const std::string &sIdentifier, void *pParam)
+		this->EventHandler::addHandler("focus.enter", [this](const std::string &sIdentifier, void *pParam)
 		{
 			this->bFocused = true;
-			RenderManager::instance().repaint();
+			UIContext::current()->redraw();
 			return true;
 		});
 
-		this->UIEventHandler::addHandler("focus.leave", [this](const std::string &sIdentifier, void *pParam)
+		this->EventHandler::addHandler("focus.leave", [this](const std::string &sIdentifier, void *pParam)
 		{
 			this->bFocused = false;
-			RenderManager::instance().repaint();
+			UIContext::current()->redraw();
 			return true;
 		});
 

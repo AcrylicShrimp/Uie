@@ -69,7 +69,7 @@ namespace Uie::Render::Component
 		void insert(const Buffer<T> &sBuffer, std::size_t nIndex);
 	};
 
-	template<class T> inline GLuint Buffer<T>::size() const
+	template<class T> inline std::size_t Buffer<T>::size() const
 	{
 		return this->nSize;
 	}

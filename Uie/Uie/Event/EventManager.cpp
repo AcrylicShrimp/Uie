@@ -265,11 +265,11 @@ namespace Uie::Event
 		return 0;
 	}
 
-	UIElement *EventManager::raycastElement(UIPlacement *pPlacement, float nX, float nY)
+	Element *EventManager::raycastElement(UIPlacement *pPlacement, float nX, float nY)
 	{
-		UIElement *pResult{nullptr};
+		Element *pResult{nullptr};
 
-		pPlacement->iterateAll(UIPlacement::IterationOrder::FrontToBack, [nX, nY, &pResult](UIElement *pElement)
+		pPlacement->iterateAll(UIPlacement::IterationOrder::FrontToBack, [nX, nY, &pResult](Element *pElement)
 		{
 			if (!pElement->rect().contains(nX, nY))
 				return false;

@@ -19,6 +19,16 @@ namespace Uie
 	struct UIE_DLL Color final
 	{
 	public:
+		static const Color Black;
+		static const Color White;
+		static const Color Red;
+		static const Color Green;
+		static const Color Blue;
+		static const Color Cyan;
+		static const Color Magenta;
+		static const Color Yellow;
+
+	public:
 		float nR;
 		float nG;
 		float nB;

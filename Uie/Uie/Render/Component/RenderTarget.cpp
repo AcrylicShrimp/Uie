@@ -100,7 +100,7 @@ namespace Uie::Render::Component
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glNamedFramebufferDrawBuffers(0, sTargetList.size(), reinterpret_cast<const GLenum *>(sTargetList.begin()));
 
-		auto pRenderingContext{RenderingContext::current()};
+		auto pRenderingContext{UIContext::current()};
 		
 		glViewport(0, 0, pRenderingContext->attachedWindow()->sizeInfo().nClientWidth, pRenderingContext->attachedWindow()->sizeInfo().nClientHeight);
 	}

@@ -30,8 +30,8 @@ namespace Uie::Event
 		struct State
 		{
 			bool bMouseEntered;
-			UIElement *pFocusedElement;
-			UIElement *pMouseEnteredElement;
+			Element *pFocusedElement;
+			Element *pMouseEnteredElement;
 		};
 
 	private:
@@ -49,7 +49,7 @@ namespace Uie::Event
 		virtual LRESULT handleWindowMessage(Window *pWindow, HWND hWindow, UINT nMessage, WPARAM wParam, LPARAM lParam) override;
 		
 	private:
-		UIElement *raycastElement(UIPlacement *pPlacement, float nX, float nY);
+		Element *raycastElement(UIPlacement *pPlacement, float nX, float nY);
 	};
 }
 

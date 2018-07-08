@@ -14,12 +14,16 @@
 
 #include <unordered_map>
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <utility>
 #include <Windows.h>
 
 namespace Uie
 {
+	template<class T> inline constexpr T combineEnum(T tFirst);
+	template<class T, class ...P> inline constexpr T combineEnum(T tFirst, P ...tSecond);
+
 	class UIE_DLL Window final
 	{
 	public:
@@ -57,8 +61,8 @@ namespace Uie
 			Minimized = WS_MINIMIZE,
 			MaximizeBox = WS_MAXIMIZEBOX,
 			MinimizeBox = WS_MINIMIZEBOX,
-			Titled = WS_TILED,
-			TitledWindow = WS_TILEDWINDOW,
+			Titled = WS_OVERLAPPED,
+			TitledWindow = WS_OVERLAPPEDWINDOW,
 			Popup = WS_POPUP,
 			PopupWindow = WS_POPUPWINDOW,
 			ResizingFrame = WS_SIZEBOX,
@@ -125,23 +129,22 @@ namespace Uie
 		struct Attribute
 		{
 		public:
-			int32_t nX;
-			int32_t nY;
-			uint32_t nWidth;
-			uint32_t nHeight;
-			SizingMode eSizingMode;
-			HMENU hMenu;
-			HICON hIcon;
-			HCURSOR hCursor;
-			HBRUSH hBackgroundBrush;
-			HWND hParentWindow;
-			LPCWSTR pMenuName;
+			int32_t nX{0};
+			int32_t nY{0};
+			uint32_t nWidth{0};
+			uint32_t nHeight{0};
+			SizingMode eSizingMode{SizingMode::ClientAreaOnly};
+			HMENU hMenu{nullptr};
+			HICON hIcon{LoadIconW(nullptr, IDI_APPLICATION)};
+			HCURSOR hCursor{LoadCursorW(nullptr, IDC_ARROW)};
+			HBRUSH hBackgroundBrush{nullptr};
+			LPCWSTR pMenuName{nullptr};
 			std::wstring sClassName;
 			std::wstring sTitleText;
-			ClassStyle eClassStyle;
-			Window::Style eStyle;
-			Window::ExtendedStyle eExtendedStyle;
-			LPVOID pExtraPointer;
+			ClassStyle eClassStyle{combineEnum(ClassStyle::HorizontalRedraw, ClassStyle::VerticalRedraw)};
+			Style eStyle{Style::TitledWindow};
+			ExtendedStyle eExtendedStyle{ExtendedStyle::Empty};
+			LPVOID pExtraPointer{nullptr};
 		};
 
 		struct SizeInfo
@@ -158,6 +161,7 @@ namespace Uie
 		static std::unordered_map<HWND, Window *> sWindowMap;
 		static std::unordered_map<UINT, std::vector<WindowMessageHandler *>> sGlobalHandlerListMap;
 		std::unordered_map<UINT, std::vector<WindowMessageHandler *>> sHandlerListMap;
+		std::function<void(Window *)> fCloseEventHandler{Window::defaultCloseEventHandler};
 		SizeInfo sSizeInfo{0, 0, 0, 0, 0, 0};
 		HINSTANCE hInstance{nullptr};
 		HWND hHandle{nullptr};
@@ -185,26 +189,34 @@ namespace Uie
 		inline BYTE colorBit() const;
 		inline BYTE depthBit() const;
 		inline BYTE stencilBit() const;
+		inline Style style() const;
+		inline ExtendedStyle extendedStyle() const;
 		inline bool created() const;
 		inline bool contextCreated() const;
 		void destroy();
-		bool create(const Attribute &sAttribute);
+		bool create(Attribute &sAttribute);
+		bool create(Window *pParent, Attribute &sAttribute);
 		void destroyContext();
 		bool createContext(BYTE nColorBit, BYTE nDepthBit, BYTE nStencilBit);
+		bool setParent(Window *pParent);
+		bool setStyle(Style eStyle);
+		bool setExtendedStyle(ExtendedStyle eExtendedStyle);
 		bool setVisible(Visibility eNewVisibility);
 		void setFileDraggable(bool bNewDraggable);
 		bool setTitle(const std::wstring &sNewTitle);
+		void setCloseEventHandler(std::function<void(Window *)> fCloseEventHandler);
 		bool moveWindow(int nNewX, int nNewY, int nNewWidth, int nNewHeight, bool bRepaint = true);
 		void registerHandler(WindowMessageHandler *pNewWindowMessageHandler);
 		void unregisterHandler(WindowMessageHandler *pNewWindowMessageHandler);
 		void unregisterHandlerAll();
-		bool peekMessage();
-		WPARAM loopMessage();
 		LRESULT handleMessage(HWND hWindow, UINT nMessage, WPARAM wParam, LPARAM lParam);
 		static Window *findWindow(HWND hWindow);
 		static void registerGlobalHandler(WindowMessageHandler *pNewWindowMessageHandler);
 		static void unregisterGlobalHandler(WindowMessageHandler *pNewWindowMessageHandler);
 		static void unregisterGlobalHandlerAll();
+		static bool peekMessage();
+		static WPARAM loopMessage();
+		static void defaultCloseEventHandler(Window *pWindow);
 		static LRESULT CALLBACK windowMessageProcedure(HWND hWindow, UINT nMessage, WPARAM wParam, LPARAM lParam);
 	};
 
@@ -251,6 +263,16 @@ namespace Uie
 	inline BYTE Window::stencilBit() const
 	{
 		return this->nStencilBit;
+	}
+
+	inline Window::Style Window::style() const
+	{
+		return static_cast<Style>(::GetWindowLongPtrW(this->hHandle, GWL_STYLE));
+	}
+
+	inline Window::ExtendedStyle Window::extendedStyle() const
+	{
+		return static_cast<ExtendedStyle>(::GetWindowLongPtrW(this->hHandle, GWL_EXSTYLE));
 	}
 
 	inline bool Window::created() const
