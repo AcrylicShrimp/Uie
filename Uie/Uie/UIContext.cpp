@@ -17,104 +17,41 @@ namespace Uie
 		//Empty.
 	}
 
-	UIContext::~UIContext()
-	{
-		this->destroy();
-	}
-
 	void UIContext::destroy()
 	{
-		if (!this->created())
-			return;
-
-		this->detach();
-
-		this->pPlacement = nullptr;
-		this->sPlacementMap.clear();
-
-		::wglDeleteContext(this->hRenderingContext);
-
-		this->hRenderingContext = nullptr;
-	}
-
-	bool UIContext::create(Window *pWindow)
-	{
 		if (this->created())
-			return false;
+		{
+			this->pPlacement = nullptr;
+			this->sPlacementMap.clear();
+		}
 
-		if (!pWindow)
-			return false;
-
-		if (!pWindow->created())
-			return false;
-
-		if (!pWindow->contextCreated())
-			return false;
-
-		if (!(this->hRenderingContext = ::wglCreateContext(pWindow->context())))
-			return false;
-
-		return true;
+		this->RenderingContext::destroy();
 	}
 
 	void UIContext::detach()
 	{
-		if (!this->attached())
-			return;
+		if (this->attached())
+		{
+			this->pAttachedWindow->unregisterHandler(this);
 
-		this->pAttachedWindow->unregisterHandler(this);
+			UIContext::sThreadRenderingContextMap.erase(this->hAttachedThread);
+			UIContext::sWindowRenderingContextMap.erase(this->pAttachedWindow);
+		}
 
-		delete this->pRenderer;
-
-		UIContext::sThreadRenderingContextMap.erase(this->hAttachedThread);
-		UIContext::sWindowRenderingContextMap.erase(this->pAttachedWindow);
-
-		wglMakeCurrent(nullptr, nullptr);
-
-		this->hAttachedThread = nullptr;
-		this->pAttachedWindow = nullptr;
-		this->pRenderer = nullptr;
+		this->RenderingContext::detach();
 	}
 
 	bool UIContext::attach(Window *pWindow)
 	{
-		if (!this->created())
-			return false;
-
-		if (this->attached())
-			return false;
-
-		if (!pWindow)
-			return false;
-
-		if (!pWindow->created())
-			return false;
-
-		if (!pWindow->contextCreated())
-			return false;
-
-		if (!wglMakeCurrent(pWindow->context(), this->hRenderingContext))
+		if (!this->RenderingContext::attach(pWindow))
 			return false;
 
 		UIContext::sThreadRenderingContextMap[this->hAttachedThread = ::GetCurrentThread()] = this;
 		UIContext::sWindowRenderingContextMap[this->pAttachedWindow = pWindow] = this;
 
-		this->pRenderer = new Render::Renderer();
-
 		this->pAttachedWindow->registerHandler(this);
 
 		return true;
-	}
-
-	void UIContext::redraw()
-	{
-		if (!this->attached())
-			return;
-
-		if (this->pPlacement)
-			this->pPlacement->update();
-
-		::RedrawWindow(this->pAttachedWindow->handle(), nullptr, nullptr, RDW_INVALIDATE);
 	}
 
 	void UIContext::inactivePlacement()
@@ -156,47 +93,32 @@ namespace Uie
 
 	LRESULT UIContext::handleWindowMessage(Window *pWindow, HWND hWindow, UINT nMessage, WPARAM wParam, LPARAM lParam)
 	{
+		LRESULT sRenderingContextResult{this->RenderingContext::handleWindowMessage(pWindow, hWindow, nMessage, wParam, lParam)};
+
+		if (!this->attached())
+			return sRenderingContextResult;
+
+		if (pWindow != this->pAttachedWindow)
+			return sRenderingContextResult;
+
 		switch (nMessage)
 		{
 		case WM_DESTROY:
 		{
-			delete this->pRenderer;
+			if (this->attached())
+			{
+				UIContext::sThreadRenderingContextMap.erase(this->hAttachedThread);
+				UIContext::sWindowRenderingContextMap.erase(this->pAttachedWindow);
+			}
 
-			UIContext::sThreadRenderingContextMap.erase(this->hAttachedThread);
-			UIContext::sWindowRenderingContextMap.erase(this->pAttachedWindow);
-
-			wglMakeCurrent(nullptr, nullptr);
-
-			this->hAttachedThread = nullptr;
-			this->pAttachedWindow = nullptr;
-			this->pRenderer = nullptr;
+			this->RenderingContext::detach();
 		}
 		break;
-		case WM_SIZE:
-		case WM_SIZING:
-		{
-			this->redraw();
-		}
-		break;
-		case WM_PAINT:
-		{
-			this->pRenderer->clear();
-
-			if (this->pPlacement)
-				this->pPlacement->render();
-
-			this->pRenderer->flush();
-
-			::ValidateRect(hWindow, nullptr);
-		}
-		break;
-		case WM_ERASEBKGND:
-			return 1;
 		default:
-			return Window::NoHandler;
+			return sRenderingContextResult;
 		}
 
-		return 0;
+		return sRenderingContextResult == Window::NoHandler ? 0 : sRenderingContextResult;
 	}
 
 	UIContext *UIContext::find(HANDLE hThread)
@@ -211,5 +133,19 @@ namespace Uie
 		auto iIndex{UIContext::sWindowRenderingContextMap.find(pWindow)};
 
 		return iIndex == UIContext::sWindowRenderingContextMap.cend() ? nullptr : iIndex->second;
+	}
+
+	void UIContext::update()
+	{
+		if (this->pPlacement)
+			this->pPlacement->update();
+	}
+
+	void UIContext::render()
+	{
+		this->pRenderer->clear();
+
+		if (this->pPlacement)
+			this->pPlacement->render();
 	}
 }

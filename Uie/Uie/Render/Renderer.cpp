@@ -6,11 +6,10 @@
 
 #include "Renderer.h"
 
-#include "../UIContext.h"
-
 namespace Uie::Render
 {
-	Renderer::Renderer()
+	Renderer::Renderer(Window *pWindow) :
+		pWindow{pWindow}
 	{
 		::glewInit();
 
@@ -19,11 +18,6 @@ namespace Uie::Render
 
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
-	}
-
-	Renderer::~Renderer()
-	{
-
 	}
 
 	void Renderer::clear()
@@ -46,6 +40,6 @@ namespace Uie::Render
 
 	void Renderer::flush()
 	{
-		SwapBuffers(UIContext::current()->attachedWindow()->context());
+		::SwapBuffers(pWindow->context());
 	}
 }

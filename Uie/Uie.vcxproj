@@ -161,6 +161,7 @@
     <ClCompile Include="Uie\Render\Component\SubShader.cpp" />
     <ClCompile Include="Uie\Render\Component\Texture.cpp" />
     <ClCompile Include="Uie\Render\Renderer.cpp" />
+    <ClCompile Include="Uie\Render\RenderingContext.cpp" />
     <ClCompile Include="Uie\Render\ShaderContainer.cpp" />
     <ClCompile Include="Uie\UIContext.cpp" />
     <ClCompile Include="Uie\UI\Component\UICanvasLayout.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Uie\Render\Component\UniformBindable.h" />
     <ClInclude Include="Uie\Render\Renderable.h" />
     <ClInclude Include="Uie\Render\Renderer.h" />
+    <ClInclude Include="Uie\Render\RenderingContext.h" />
     <ClInclude Include="Uie\Render\ShaderContainer.h" />
     <ClInclude Include="Uie\UIContext.h" />
     <ClInclude Include="Uie\UieDLL.h" />

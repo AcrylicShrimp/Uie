@@ -129,6 +129,9 @@
     <ClCompile Include="Uie\UI\Component\UITest.cpp">
       <Filter>Uie\UI\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Uie\Render\RenderingContext.cpp">
+      <Filter>Uie\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Uie\Window.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="Uie\UI\Component\UITest.h">
       <Filter>Uie\UI\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Uie\Render\RenderingContext.h">
+      <Filter>Uie\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

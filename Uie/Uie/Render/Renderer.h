@@ -11,6 +11,7 @@
 #include "../UieDLL.h"
 
 #include "../Color.h"
+#include "../Window.h"
 
 #include <Windows.h>
 #include <GL/glew.h>
@@ -21,19 +22,19 @@ namespace Uie::Render
 	class UIE_DLL Renderer final
 	{
 	private:
+		Window *pWindow{nullptr};
 		bool bNeedClearColor{true};
 		bool bNeedClearDepth{true};
 		bool bNeedClearStencil{false};
 		Color sClearColor{Color::Black};
 		GLfloat nClearDepth{1.f};
 		GLint nClearStencil{0};
-
 		
 	public:
-		Renderer();
+		Renderer(Window *pWindow);
 		Renderer(const Renderer &sSrc) = delete;
 		Renderer(Renderer &&sSrc) = default;
-		~Renderer();
+		~Renderer() = default;
 		
 	public:
 		Renderer &operator=(const Renderer &sSrc) = delete;
